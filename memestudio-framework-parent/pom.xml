@@ -203,6 +203,14 @@
             <id>aliyun-repo</id>
             <url>https://maven.aliyun.com/repository/central</url>
         </repository>
+        <repository>
+            <id>rdc-releases</id>
+            <url>https://packages.aliyun.com/maven/repository/2019199-release-TmOtei/</url>
+        </repository>
+        <repository>
+            <id>rdc-snapshots</id>
+            <url>https://packages.aliyun.com/maven/repository/2019199-snapshot-ylHXQz/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -210,6 +218,25 @@
             <id>aliyun-repo</id>
             <url>https://maven.aliyun.com/repository/central</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>rdc-releases</id>
+            <url>https://packages.aliyun.com/maven/repository/2019199-release-TmOtei/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>rdc-snapshots</id>
+            <url>https://packages.aliyun.com/maven/repository/2019199-snapshot-ylHXQz/</url>
+        </pluginRepository>
     </pluginRepositories>
+
+    <distributionManagement>
+        <repository>
+            <id>rdc-releases</id>
+            <url>https://packages.aliyun.com/maven/repository/2019199-release-TmOtei/</url>
+        </repository>
+        <snapshotRepository>
+            <id>rdc-snapshots</id>
+            <url>https://packages.aliyun.com/maven/repository/2019199-snapshot-ylHXQz/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

@@ -13,7 +13,7 @@ public class SystemErrorCode implements ErrorCode {
 
     private static final String noteTemplate = "系统异常，错误代码：%s";
 
-    private final String code = "CM0001";
+    private final String code = "000-001";
 
     private final String note;
 

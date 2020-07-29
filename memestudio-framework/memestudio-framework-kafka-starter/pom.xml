@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>dev.memestudio.framework</groupId>
             <artifactId>memestudio-framework-common</artifactId>
             <version>${project.version}</version>
         </dependency>

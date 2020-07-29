@@ -3,6 +3,7 @@ package dev.memestudio.framework.redis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.memestudio.framework.common.support.NumericIdGenerator;
 import dev.memestudio.framework.redis.support.RedisNumericIdGenerator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +23,8 @@ public class FrameworkRedisAutoConfiguration {
 
     @ConditionalOnMissingBean
     @Bean
-    public NumericIdGenerator defaultIdGenerator(RedisOps redisOps) {
-        return new RedisNumericIdGenerator(redisOps);
+    public NumericIdGenerator defaultIdGenerator(RedisOps redisOps, @Value("${spring.application.name}") String key) {
+        return new RedisNumericIdGenerator(redisOps, key);
     }
 
     @Bean

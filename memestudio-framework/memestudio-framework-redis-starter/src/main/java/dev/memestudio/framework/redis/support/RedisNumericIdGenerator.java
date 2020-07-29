@@ -22,8 +22,10 @@ public class RedisNumericIdGenerator implements NumericIdGenerator {
 
     private final RedisOps redisOps;
 
+    private final String key;
+
     @Override
-    public String generateId(String key) {
+    public String generateId() {
         return Option.of(redisOps.incr(key))
                      .peek(id -> Option.of(id)
                                        .filter(Predicate.isEqual(9900L))

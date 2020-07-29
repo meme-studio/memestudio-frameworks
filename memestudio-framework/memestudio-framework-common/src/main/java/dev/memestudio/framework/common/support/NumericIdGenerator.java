@@ -8,6 +8,6 @@ package dev.memestudio.framework.common.support;
  */
 public interface NumericIdGenerator {
 
-    String generateId(String key);
+    String generateId();
 
 }

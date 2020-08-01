@@ -24,7 +24,7 @@ public class FrameworkSecurityProperties {
 
     @Getter
     @Setter
-    static class JksKeyPair {
+    public static class JksKeyPair {
 
         private Resource path;
 

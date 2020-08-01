@@ -11,6 +11,7 @@
         <module>memestudio-framework-xxljob-starter</module>
         <module>memestudio-framework-jpa-starter</module>
         <module>memestudio-framework-bom</module>
+        <module>memestudio-framework-security-starter</module>
     </modules>
     <parent>
         <groupId>dev.memestudio.framework</groupId>

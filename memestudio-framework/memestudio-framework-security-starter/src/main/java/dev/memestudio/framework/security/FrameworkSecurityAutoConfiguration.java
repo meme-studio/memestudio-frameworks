@@ -145,7 +145,7 @@ public class FrameworkSecurityAutoConfiguration extends AuthorizationServerConfi
         @ConditionalOnClass(Feign.class)
         @Bean
         public AuthUserClientRequestInterceptor authUserClientRequestInterceptor() {
-            return new AuthUserClientRequestInterceptor(objectMapper);
+            return new AuthUserClientRequestInterceptor();
         }
 
         @Override

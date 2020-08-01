@@ -48,6 +48,11 @@
                 <artifactId>memestudio-framework-xxljob-starter</artifactId>
                 <version>${memestudio-framework.version}</version>
             </dependency>
+            <dependency>
+                <groupId>dev.memestudio.framework</groupId>
+                <artifactId>memestudio-framework-security-starter</artifactId>
+                <version>${memestudio-framework.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

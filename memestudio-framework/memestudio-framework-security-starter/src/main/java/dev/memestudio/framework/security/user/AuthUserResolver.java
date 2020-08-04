@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * @author meme
  * @since 2020/7/31
  */
-public abstract class AuthUserService<USER> implements UserDetailsService {
+public abstract class AuthUserResolver<USER> implements UserDetailsService {
 
     @Autowired
     private RedisOps redisOps;

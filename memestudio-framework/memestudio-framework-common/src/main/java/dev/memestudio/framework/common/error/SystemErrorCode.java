@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SystemErrorCode implements ErrorCode {
 
-    private static final String noteTemplate = "系统异常，错误代码：%s";
+    private static final String noteTemplate = "系統发生異常，請稍后重試，錯誤代碼：%s";
 
     private final String code = "000-001";
 

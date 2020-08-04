@@ -2,7 +2,7 @@ package dev.memestudio.framework.security;
 
 import dev.memestudio.framework.security.user.AuthUser;
 import dev.memestudio.framework.security.user.AuthUserClientRequestInterceptor;
-import dev.memestudio.framework.security.user.AuthUserService;
+import dev.memestudio.framework.security.user.AuthUserResolver;
 import dev.memestudio.framework.security.user.AuthUserIdMethodArgumentResolver;
 import feign.Feign;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ import java.util.List;
  * @author meme
  * @since 2020/7/31
  */
-@ConditionalOnProperty(prefix = FrameworkSecurityProperties.PREFIX, name = "mode", value = "SERVICE")
+@ConditionalOnProperty(prefix = FrameworkSecurityProperties.PREFIX, name = "mode", havingValue = "service")
 @EnableConfigurationProperties(FrameworkSecurityProperties.class)
 @RequiredArgsConstructor
 @Configuration
@@ -52,7 +52,7 @@ import java.util.List;
 public class FrameworkSecurityAutoConfiguration extends AuthorizationServerConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
-    private final AuthUserService userDetailsService;
+    private final AuthUserResolver authUserResolver;
     private final AuthenticationManager authenticationManager;
     private final FrameworkSecurityProperties properties;
 
@@ -76,7 +76,7 @@ public class FrameworkSecurityAutoConfiguration extends AuthorizationServerConfi
             return accessToken;
         }, accessTokenConverter())); //配置JWT的内容增强器
         endpoints.authenticationManager(authenticationManager)
-                 .userDetailsService(userDetailsService) //配置加载用户信息的服务
+                 .userDetailsService(authUserResolver) //配置加载用户信息的服务
                  .accessTokenConverter(accessTokenConverter())
                  .tokenEnhancer(enhancerChain);
     }

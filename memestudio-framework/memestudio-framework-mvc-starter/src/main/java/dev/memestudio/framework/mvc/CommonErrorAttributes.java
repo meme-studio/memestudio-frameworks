@@ -13,6 +13,7 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.context.request.RequestAttributes;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 import static io.vavr.API.*;
 import static io.vavr.Predicates.*;
@@ -79,9 +81,10 @@ public class CommonErrorAttributes implements ErrorAttributes, HandlerExceptionR
                         Case($(instanceOf(BusinessException.class)), this::handleBusinessException),
                         Case($(anyOf(
                                 instanceOf(ServletRequestBindingException.class),
-                                instanceOf(MethodArgumentNotValidException.class),
                                 instanceOf(TypeMismatchException.class)
                         )), this::handleParamException),
+                        Case($(instanceOf(MethodArgumentNotValidException.class)),
+                                this::handleNotValidException),
                         Case($(instanceOf(Exception.class)), this::handleException),
                         Case($(), () -> handleUnException(getAttribute(webRequest, RequestDispatcher.ERROR_STATUS_CODE)))
                 );
@@ -123,6 +126,18 @@ public class CommonErrorAttributes implements ErrorAttributes, HandlerExceptionR
      */
     private ErrorCode handleParamException(Exception ex) {
         return ParamErrorCode.of(ex.hashCode(), ex.getMessage());
+    }
+
+    /**
+     * 参数异常
+     */
+    private ErrorCode handleNotValidException(MethodArgumentNotValidException ex) {
+        String note = Optional.of(ex)
+                              .map(MethodArgumentNotValidException::getBindingResult)
+                              .map(BindingResult::getFieldError)
+                              .map(error -> String.format("'%s' %s", error.getField(), error.getDefaultMessage()))
+                              .orElse("");
+        return ParamNotVaildErrorCode.of(note, ex.getMessage());
     }
 
     /**

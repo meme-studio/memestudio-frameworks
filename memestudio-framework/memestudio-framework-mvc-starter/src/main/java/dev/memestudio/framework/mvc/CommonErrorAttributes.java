@@ -13,6 +13,7 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -81,6 +82,7 @@ public class CommonErrorAttributes implements ErrorAttributes, HandlerExceptionR
                         Case($(instanceOf(BusinessException.class)), this::handleBusinessException),
                         Case($(anyOf(
                                 instanceOf(ServletRequestBindingException.class),
+                                instanceOf(HttpMessageNotReadableException.class),
                                 instanceOf(TypeMismatchException.class)
                         )), this::handleParamException),
                         Case($(instanceOf(MethodArgumentNotValidException.class)),

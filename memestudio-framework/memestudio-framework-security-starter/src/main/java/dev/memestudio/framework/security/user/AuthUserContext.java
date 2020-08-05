@@ -1,11 +1,11 @@
 package dev.memestudio.framework.security.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.memestudio.framework.common.error.BusinessException;
 import dev.memestudio.framework.redis.RedisOps;
 import dev.memestudio.framework.security.AuthErrorCode;
 import dev.memestudio.framework.security.permission.Permission;
 import lombok.RequiredArgsConstructor;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 

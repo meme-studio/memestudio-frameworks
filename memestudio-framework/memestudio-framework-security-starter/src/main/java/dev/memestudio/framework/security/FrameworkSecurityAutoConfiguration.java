@@ -1,24 +1,22 @@
 package dev.memestudio.framework.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.memestudio.framework.security.user.AuthUser;
 import dev.memestudio.framework.security.user.AuthUserClientRequestInterceptor;
-import dev.memestudio.framework.security.user.AuthUserResolver;
 import dev.memestudio.framework.security.user.AuthUserIdMethodArgumentResolver;
+import dev.memestudio.framework.security.user.AuthUserResolver;
 import feign.Feign;
 import lombok.RequiredArgsConstructor;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.security.oauth2.authserver.OAuth2AuthorizationServerConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -44,7 +42,8 @@ import java.util.List;
  * @author meme
  * @since 2020/7/31
  */
-@ConditionalOnProperty(prefix = FrameworkSecurityProperties.PREFIX, name = "mode", havingValue = "service")
+@AutoConfigureBefore(OAuth2AuthorizationServerConfiguration.class)
+@ConditionalOnProperty(prefix = FrameworkSecurityProperties.PREFIX, name = "mode", havingValue = "SERVICE")
 @EnableConfigurationProperties(FrameworkSecurityProperties.class)
 @RequiredArgsConstructor
 @Configuration
@@ -103,31 +102,6 @@ public class FrameworkSecurityAutoConfiguration extends AuthorizationServerConfi
                                   .toCharArray())
                 .getKeyPair(properties.getJksKeyPair()
                                       .getAlias());
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Configuration
-    @EnableWebSecurity
-    public static class WebSecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable()
-                .cors().and()
-                .authorizeRequests()
-                .anyRequest().permitAll();
-        }
-
-        @Bean
-        @Override
-        public AuthenticationManager authenticationManagerBean() throws Exception {
-            return super.authenticationManagerBean();
-        }
-
     }
 
     @ConditionalOnWebApplication

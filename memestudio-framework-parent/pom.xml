@@ -43,7 +43,7 @@
         <objenesis.version>2.5.1</objenesis.version>
         <joor.version>0.9.7</joor.version>
         <xxl-job.version>2.2.0</xxl-job.version>
-        <springfox.version>3.0.0</springfox.version>
+        <springdoc-openapi-ui.version>1.4.3</springdoc-openapi-ui.version>
     </properties>
 
     <dependencies>
@@ -96,9 +96,9 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-boot-starter</artifactId>
-                <version>${springfox.version}</version>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc-openapi-ui.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>

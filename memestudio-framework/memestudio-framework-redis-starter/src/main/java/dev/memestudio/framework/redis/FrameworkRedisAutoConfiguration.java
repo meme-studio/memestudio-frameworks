@@ -6,12 +6,18 @@ import dev.memestudio.framework.redis.support.RedisNumericIdGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.integration.redis.util.RedisLockRegistry;
 import org.springframework.integration.support.locks.LockRegistry;
+
+import static org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair.fromSerializer;
 
 /**
  * @author meme
@@ -40,5 +46,14 @@ public class FrameworkRedisAutoConfiguration {
             RedisConnectionFactory connectionFactory,
             FrameworkRedisProperties properties) {
         return new RedisLockRegistry(connectionFactory, String.format("%s:lock", properties.getKeyPrefix()), properties.getLock().getExpireAfter());
+    }
+
+    @Bean
+    public CacheManager cacheManager(RedisConnectionFactory factory) {
+        return RedisCacheManager.builder(factory)
+                                .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig()
+                                                                      .serializeKeysWith(fromSerializer(RedisSerializer.string()))
+                                                                      .serializeValuesWith(fromSerializer(RedisSerializer.json())))
+                                .build();
     }
 }

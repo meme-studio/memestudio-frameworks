@@ -1,4 +1,4 @@
-package dev.memestudio.framework.jpa;
+package dev.memestudio.framework.common;
 
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;

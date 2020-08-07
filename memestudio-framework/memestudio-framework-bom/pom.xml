@@ -25,6 +25,11 @@
             </dependency>
             <dependency>
                 <groupId>dev.memestudio.framework</groupId>
+                <artifactId>memestudio-framework-common-starter</artifactId>
+                <version>${memestudio-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.memestudio.framework</groupId>
                 <artifactId>memestudio-framework-jpa-starter</artifactId>
                 <version>${memestudio-framework.version}</version>
             </dependency>

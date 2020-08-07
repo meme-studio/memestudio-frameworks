@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnClass(XxlJobExecutor.class)
 @EnableConfigurationProperties(XxlJobProperties.class)
-public class XxlJobAutoConfiguration {
+public class FrameworkXxlJobAutoConfiguration {
 
     @ConditionalOnProperty(prefix = XxlJobProperties.PREFIX, name = "enabled", matchIfMissing = true)
     @ConditionalOnMissingBean

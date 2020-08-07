@@ -1,7 +1,6 @@
-package dev.memestudio.framework.jpa.slice;
+package dev.memestudio.framework.common.slice;
 
 import com.querydsl.core.QueryResults;
-import dev.memestudio.framework.common.slice.PageResponse;
 import lombok.experimental.UtilityClass;
 
 /**

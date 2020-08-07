@@ -17,6 +17,8 @@ public class ScrollingRequest implements Serializable {
 
     protected String offset = "0";
 
+    protected long size = 20;
+
     public long offsetAsLong() {
         return Long.parseLong(offset);
     }

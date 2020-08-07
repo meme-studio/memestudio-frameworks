@@ -19,7 +19,7 @@ import org.springframework.kafka.core.KafkaTemplate;
  */
 @EnableKafka
 @Configuration
-public class KafkaAutoConfiguration {
+public class FrameworkKafkaAutoConfiguration {
 
     @Bean
     public KafkaSender defaultKafkaSender(KafkaTemplate<String, String> template, ObjectMapper mapper, Tracer tracer) {

@@ -5,6 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>memestudio-framework-common</module>
+        <module>memestudio-framework-common-starter</module>
         <module>memestudio-framework-mvc-starter</module>
         <module>memestudio-framework-redis-starter</module>
         <module>memestudio-framework-kafka-starter</module>

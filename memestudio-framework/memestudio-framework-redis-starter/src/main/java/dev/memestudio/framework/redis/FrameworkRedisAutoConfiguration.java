@@ -49,9 +49,12 @@ public class FrameworkRedisAutoConfiguration {
     }
 
     @Bean
-    public CacheManager cacheManager(RedisConnectionFactory factory) {
+    public CacheManager cacheManager(RedisConnectionFactory factory,
+                                     FrameworkRedisProperties properties) {
         return RedisCacheManager.builder(factory)
+                                .transactionAware()
                                 .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig()
+                                                                      .prefixCacheNameWith(String.format("%s:", properties.getKeyPrefix()))
                                                                       .serializeKeysWith(fromSerializer(RedisSerializer.string()))
                                                                       .serializeValuesWith(fromSerializer(RedisSerializer.json())))
                                 .build();

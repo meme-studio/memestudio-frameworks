@@ -14,7 +14,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AuthErrorCode implements ErrorCode {
 
-    EMPTY_PERMISSIONS("auth-001", "您的授權信息已发生變更，請重新登錄", null);
+    EMPTY_PERMISSIONS("auth-001", "您的授權信息已发生變更，請重新登錄", null),
+    NO_PERMISSION("auth-002", "您沒有操作權限", null);
 
     private final String code;
 

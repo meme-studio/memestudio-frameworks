@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * KafkaPushEntity
  *
  * @author meme
  * @since 2019-03-19 17:45

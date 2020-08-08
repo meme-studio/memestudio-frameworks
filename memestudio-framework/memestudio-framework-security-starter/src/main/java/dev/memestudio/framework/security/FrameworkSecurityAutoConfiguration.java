@@ -28,7 +28,8 @@ import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 
 import java.security.KeyPair;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -65,8 +66,11 @@ public class FrameworkSecurityAutoConfiguration extends AuthorizationServerConfi
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
         enhancerChain.setTokenEnhancers(Arrays.asList((OAuth2AccessToken accessToken, OAuth2Authentication authentication) -> {
-            AuthUser securityUser = (AuthUser) authentication.getPrincipal();
-            ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(Collections.singletonMap("userId", securityUser.getUserId()));
+            AuthUser authUser = (AuthUser) authentication.getPrincipal();
+            Map<String, Object> info = new HashMap<>();
+            info.put("userId", authUser.getUserId());
+            info.put("userName", authUser.getUsername());
+            ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(info);
             return accessToken;
         }, accessTokenConverter())); //配置JWT的内容增强器
         endpoints.authenticationManager(authenticationManager)

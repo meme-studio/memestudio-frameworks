@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.memestudio.framework.security.permission.PermissionHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -18,7 +17,6 @@ import java.util.Set;
  * @since 2020/8/1
  */
 @RequiredArgsConstructor
-@Order(10)
 public class AuthUserInterceptor extends HandlerInterceptorAdapter {
 
     private final PermissionHolder permissionHolder;
@@ -27,16 +25,18 @@ public class AuthUserInterceptor extends HandlerInterceptorAdapter {
 
     private final AuthUserResolver<Object, Object> authUserResolver;
 
-    @SneakyThrows
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         Optional.ofNullable(request.getHeader(AuthUserConstants.AUTH_USER_HEADER))
-                .ifPresent(authUserString -> {
-                    AuthUser authUser = objectMapper.readValue(authUserString, AuthUser.class);
-                    CurrentAuthUser currentAuthUser = new CurrentAuthUser(authUser.getUserId(), authUser.getUsername(), getPermissions(authUser));
-                    AuthUserContext.setCurrent(currentAuthUser);
-                });
+                .ifPresent(this::determineAuthUser);
         return true;
+    }
+
+    @SneakyThrows
+    private void determineAuthUser(String authUserString) {
+        AuthUserInfo authUser = objectMapper.readValue(authUserString, AuthUserInfo.class);
+        CurrentAuthUser currentAuthUser = new CurrentAuthUser(authUser.getUserId(), authUser.getUsername(), getPermissions(authUser));
+        AuthUserContext.setCurrent(currentAuthUser);
     }
 
     @Override
@@ -50,13 +50,13 @@ public class AuthUserInterceptor extends HandlerInterceptorAdapter {
     }
 
     @SuppressWarnings("unchecked")
-    private Set<String> getPermissions(AuthUser user) {
+    private Set<String> getPermissions(AuthUserInfo user) {
         return permissionHolder.get(user.getUserId())
                                .map(permissions -> ((Set<String>) permissions))
                                .orElseGet(() -> getPermissionFromAuthUserResolver(user));
     }
 
-    private Set<String> getPermissionFromAuthUserResolver(AuthUser user) {
+    private Set<String> getPermissionFromAuthUserResolver(AuthUserInfo user) {
         Set<String> permissions = authUserResolver.determinePermission(user.getUserId());
         permissionHolder.hold(user.getUserId(), permissions);
         return permissions;

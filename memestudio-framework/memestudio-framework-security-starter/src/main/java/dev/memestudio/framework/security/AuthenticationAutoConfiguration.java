@@ -62,7 +62,7 @@ public class AuthenticationAutoConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(permissionInterceptor).addPathPatterns("/**");
         registry.addInterceptor(authUserInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(permissionInterceptor).addPathPatterns("/**");
     }
 }

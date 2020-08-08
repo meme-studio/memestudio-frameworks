@@ -1,7 +1,9 @@
 package dev.memestudio.framework.security.user;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 登陆鉴权用户
@@ -11,12 +13,14 @@ import lombok.Data;
  */
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AuthUserInfo {
 
-    private final String userId;
+    private String userId;
 
-    private final String username;
+    private String username;
 
-    private final String password;
+    private String password;
 
 }

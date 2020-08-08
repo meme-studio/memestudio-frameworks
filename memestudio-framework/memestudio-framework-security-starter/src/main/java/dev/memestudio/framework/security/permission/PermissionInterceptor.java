@@ -4,6 +4,7 @@ import dev.memestudio.framework.common.error.BusinessException;
 import dev.memestudio.framework.security.AuthErrorCode;
 import dev.memestudio.framework.security.user.AuthUserContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -16,10 +17,10 @@ import java.util.function.Predicate;
  * @author meme
  * @since 2020/8/1
  */
+@Order(100)
 @RequiredArgsConstructor
 public class PermissionInterceptor extends HandlerInterceptorAdapter {
 
-    private final AuthUserContext authUserContext;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -33,8 +34,8 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
     }
 
     private void check(String permission) {
-        authUserContext.current()
-                       .listPermissions()
+        AuthUserContext.current()
+                       .getPermissions()
                        .stream()
                        .filter(Predicate.isEqual(permission))
                        .findAny()

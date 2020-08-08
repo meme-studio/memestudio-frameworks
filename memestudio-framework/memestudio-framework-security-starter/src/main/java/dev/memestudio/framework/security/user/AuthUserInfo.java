@@ -1,5 +1,6 @@
 package dev.memestudio.framework.security.user;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Data;
  * @author meme
  * @since 2020/7/31
  */
+@Builder
 @Data
 public class AuthUserInfo {
 

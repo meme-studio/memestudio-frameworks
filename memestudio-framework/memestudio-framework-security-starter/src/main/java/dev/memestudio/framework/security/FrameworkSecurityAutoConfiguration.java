@@ -1,10 +1,9 @@
 package dev.memestudio.framework.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.memestudio.framework.security.user.AuthUser;
-import dev.memestudio.framework.security.user.AuthUserClientRequestInterceptor;
-import dev.memestudio.framework.security.user.AuthUserIdMethodArgumentResolver;
-import dev.memestudio.framework.security.user.AuthUserResolver;
+import dev.memestudio.framework.redis.RedisOps;
+import dev.memestudio.framework.security.permission.PermissionHolder;
+import dev.memestudio.framework.security.user.*;
 import feign.Feign;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ import java.util.List;
 public class FrameworkSecurityAutoConfiguration extends AuthorizationServerConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
-    private final AuthUserResolver authUserResolver;
+    private final AuthUserUserDetailsService authUserResolver;
     private final AuthenticationManager authenticationManager;
     private final FrameworkSecurityProperties properties;
 
@@ -102,6 +101,17 @@ public class FrameworkSecurityAutoConfiguration extends AuthorizationServerConfi
                                   .toCharArray())
                 .getKeyPair(properties.getJksKeyPair()
                                       .getAlias());
+    }
+
+    @Bean
+    public AuthUserUserDetailsService authUserUserDetailsService(AuthUserResolver<Object, Object> authUserResolver,
+                                                                 PermissionHolder permissionHolder) {
+        return new AuthUserUserDetailsService(authUserResolver, permissionHolder);
+    }
+
+    @Bean
+    public PermissionHolder permissionHolder(RedisOps redisOps) {
+        return new PermissionHolder(redisOps);
     }
 
     @ConditionalOnWebApplication

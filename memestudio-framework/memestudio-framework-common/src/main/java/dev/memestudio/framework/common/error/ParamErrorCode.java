@@ -13,7 +13,7 @@ public class ParamErrorCode implements ErrorCode {
 
     private static final String noteTemplate = "請求參數有誤, 錯誤代碼：%s";
 
-    private final String code = "000-002";
+    private final String code = "system-002";
 
     private final String note;
 

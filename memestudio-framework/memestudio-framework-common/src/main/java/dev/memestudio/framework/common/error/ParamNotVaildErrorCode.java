@@ -13,7 +13,7 @@ public class ParamNotVaildErrorCode implements ErrorCode {
 
     private static final String noteTemplate = "請求參數有誤, %s";
 
-    private final String code = "000-003";
+    private final String code = "system-003";
 
     private final String note;
 

@@ -10,6 +10,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -29,10 +30,12 @@ public class AuthUserInterceptor extends HandlerInterceptorAdapter {
     @SneakyThrows
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String authUserString = request.getHeader(AuthUserConstants.AUTH_USER_HEADER);
-        AuthUser authUser = objectMapper.readValue(authUserString, AuthUser.class);
-        CurrentAuthUser currentAuthUser = new CurrentAuthUser(authUser.getUserId(), authUser.getUsername(), getPermissions(authUser));
-        AuthUserContext.setCurrent(currentAuthUser);
+        Optional.ofNullable(request.getHeader(AuthUserConstants.AUTH_USER_HEADER))
+                .ifPresent(authUserString -> {
+                    AuthUser authUser = objectMapper.readValue(authUserString, AuthUser.class);
+                    CurrentAuthUser currentAuthUser = new CurrentAuthUser(authUser.getUserId(), authUser.getUsername(), getPermissions(authUser));
+                    AuthUserContext.setCurrent(currentAuthUser);
+                });
         return true;
     }
 

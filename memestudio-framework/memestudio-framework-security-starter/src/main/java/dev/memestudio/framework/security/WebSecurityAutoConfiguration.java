@@ -1,5 +1,7 @@
 package dev.memestudio.framework.security;
 
+import dev.memestudio.framework.redis.RedisOps;
+import dev.memestudio.framework.security.permission.PermissionHolder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,8 +30,15 @@ public class WebSecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public PermissionHolder permissionHolder(RedisOps redisOps) {
+        return new PermissionHolder(redisOps);
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 
 }

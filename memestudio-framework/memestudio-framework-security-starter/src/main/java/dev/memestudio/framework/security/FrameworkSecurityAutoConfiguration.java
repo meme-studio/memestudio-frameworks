@@ -1,16 +1,13 @@
 package dev.memestudio.framework.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.memestudio.framework.redis.RedisOps;
 import dev.memestudio.framework.security.permission.PermissionHolder;
-import dev.memestudio.framework.security.user.*;
-import feign.Feign;
+import dev.memestudio.framework.security.user.AuthUser;
+import dev.memestudio.framework.security.user.AuthUserResolver;
+import dev.memestudio.framework.security.user.AuthUserUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.security.oauth2.authserver.OAuth2AuthorizationServerConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -28,13 +25,10 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.security.KeyPair;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 
 /**
@@ -50,7 +44,9 @@ import java.util.List;
 public class FrameworkSecurityAutoConfiguration extends AuthorizationServerConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
-    private final AuthUserUserDetailsService authUserResolver;
+
+    @Autowired
+    private AuthUserUserDetailsService authUserResolver;
     private final AuthenticationManager authenticationManager;
     private final FrameworkSecurityProperties properties;
 
@@ -103,39 +99,12 @@ public class FrameworkSecurityAutoConfiguration extends AuthorizationServerConfi
                                       .getAlias());
     }
 
+
     @Bean
     public AuthUserUserDetailsService authUserUserDetailsService(AuthUserResolver<Object, Object> authUserResolver,
                                                                  PermissionHolder permissionHolder) {
         return new AuthUserUserDetailsService(authUserResolver, permissionHolder);
     }
 
-    @Bean
-    public PermissionHolder permissionHolder(RedisOps redisOps) {
-        return new PermissionHolder(redisOps);
-    }
-
-    @ConditionalOnWebApplication
-    @Configuration
-    protected static class AuthenticationConfiguration implements WebMvcConfigurer {
-
-        @Autowired
-        private ObjectMapper objectMapper;
-
-        @Bean
-        public AuthUserIdMethodArgumentResolver authenticationUserIdMethodArgumentResolver() {
-            return new AuthUserIdMethodArgumentResolver(objectMapper);
-        }
-
-        @ConditionalOnClass(Feign.class)
-        @Bean
-        public AuthUserClientRequestInterceptor authUserClientRequestInterceptor() {
-            return new AuthUserClientRequestInterceptor();
-        }
-
-        @Override
-        public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-            argumentResolvers.add(authenticationUserIdMethodArgumentResolver());
-        }
-    }
 }
 

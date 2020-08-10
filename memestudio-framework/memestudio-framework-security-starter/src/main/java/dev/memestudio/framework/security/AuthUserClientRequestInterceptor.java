@@ -1,5 +1,6 @@
-package dev.memestudio.framework.security.user;
+package dev.memestudio.framework.security;
 
+import dev.memestudio.framework.security.context.AuthConstants;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -21,8 +22,8 @@ public class AuthUserClientRequestInterceptor implements RequestInterceptor {
                 .filter(ServletRequestAttributes.class::isInstance)
                 .map(ServletRequestAttributes.class::cast)
                 .map(ServletRequestAttributes::getRequest)
-                .map(request -> request.getHeader(AuthUserConstants.AUTH_USER_HEADER))
-                .ifPresent(authUser -> template.header(AuthUserConstants.AUTH_USER_HEADER, authUser));
+                .map(request -> request.getHeader(AuthConstants.AUTH_USER_HEADER))
+                .ifPresent(authUser -> template.header(AuthConstants.AUTH_USER_HEADER, authUser));
     }
 
 }

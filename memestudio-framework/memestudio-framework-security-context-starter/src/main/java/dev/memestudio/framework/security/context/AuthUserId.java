@@ -1,4 +1,4 @@
-package dev.memestudio.framework.security.user;
+package dev.memestudio.framework.security.context;
 
 import java.lang.annotation.*;
 

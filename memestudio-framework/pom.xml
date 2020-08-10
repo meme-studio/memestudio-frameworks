@@ -14,6 +14,7 @@
         <module>memestudio-framework-bom</module>
         <module>memestudio-framework-security-starter</module>
         <module>memestudio-framework-security-context-starter</module>
+        <module>memestudio-framework-security-auth-server-starter</module>
     </modules>
     <parent>
         <groupId>dev.memestudio.framework</groupId>

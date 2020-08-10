@@ -1,6 +1,9 @@
-package dev.memestudio.framework.security.user;
+package dev.memestudio.framework.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.memestudio.framework.security.context.AuthConstants;
+import dev.memestudio.framework.security.context.AuthUserId;
+import dev.memestudio.framework.security.context.CurrentAuthUser;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.core.MethodParameter;
@@ -17,14 +20,13 @@ public class AuthUserIdMethodArgumentResolver extends AbstractNamedValueMethodAr
 
     @Override
     protected NamedValueInfo createNamedValueInfo(MethodParameter parameter) {
-        return new NamedValueInfo(AuthUserConstants.AUTH_USER_HEADER, false, null);
+        return new NamedValueInfo(AuthConstants.AUTH_USER_HEADER, false, null);
     }
 
     @SneakyThrows
     @Override
     protected Object resolveName(String name, MethodParameter parameter, NativeWebRequest request) {
-        String user = request.getHeader(name);
-        return  objectMapper.readValue(user, AuthUser.class)
+        return  objectMapper.readValue(request.getHeader(name), CurrentAuthUser.class)
                             .getUserId();
     }
 

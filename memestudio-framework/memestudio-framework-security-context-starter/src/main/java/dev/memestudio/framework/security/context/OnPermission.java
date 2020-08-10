@@ -1,4 +1,4 @@
-package dev.memestudio.framework.security.permission;
+package dev.memestudio.framework.security.context;
 
 import java.lang.annotation.*;
 
@@ -13,6 +13,6 @@ public @interface OnPermission {
 
     String value();
 
-    String description();
+    String description() default "";
 
 }

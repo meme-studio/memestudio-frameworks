@@ -2,4 +2,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 dev.memestudio.framework.security.FrameworkSecurityAutoConfiguration,\
 dev.memestudio.framework.security.WebSecurityAutoConfiguration,\
-dev.memestudio.framework.security.AuthenticationAutoConfiguration
+dev.memestudio.framework.security.FrameworkSecurityAutoConfiguration

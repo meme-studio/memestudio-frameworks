@@ -11,5 +11,12 @@
 
     <artifactId>memestudio-framework-security-context-starter</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>dev.memestudio.framework</groupId>
+            <artifactId>memestudio-framework-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

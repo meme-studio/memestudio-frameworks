@@ -1,8 +1,9 @@
-package dev.memestudio.framework.security.permission;
+package dev.memestudio.framework.security;
 
 import dev.memestudio.framework.common.error.BusinessException;
-import dev.memestudio.framework.security.AuthErrorCode;
-import dev.memestudio.framework.security.user.AuthUserContext;
+import dev.memestudio.framework.security.context.AuthErrorCode;
+import dev.memestudio.framework.security.context.AuthUserContext;
+import dev.memestudio.framework.security.context.OnPermission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;

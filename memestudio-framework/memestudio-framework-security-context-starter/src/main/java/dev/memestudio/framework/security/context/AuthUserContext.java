@@ -1,4 +1,4 @@
-package dev.memestudio.framework.security.user;
+package dev.memestudio.framework.security.context;
 
 import lombok.experimental.UtilityClass;
 
@@ -9,9 +9,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class AuthUserContext {
 
-    private final ThreadLocal<CurrentAuthUser> currentAuthUser = ThreadLocal.withInitial(() -> {
-        throw new IllegalStateException("当前不是登陆环境");
-    });
+    private final ThreadLocal<CurrentAuthUser> currentAuthUser = new ThreadLocal<>();
 
     public CurrentAuthUser current() {
         return currentAuthUser.get();

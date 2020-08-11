@@ -33,12 +33,13 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
     }
 
     private void check(String permission) {
-        AuthUserContext.current()
-                       .getPermissions()
-                       .stream()
-                       .filter(Predicate.isEqual(permission))
-                       .findAny()
-                       .orElseThrow(() -> new BusinessException(AuthErrorCode.NO_PERMISSION));
+        Optional.ofNullable(AuthUserContext.current())
+                .orElseThrow(() -> new BusinessException(AuthErrorCode.INVALID_LOGIN_MESSAGE))
+                .getPermissions()
+                .stream()
+                .filter(Predicate.isEqual(permission))
+                .findAny()
+                .orElseThrow(() -> new BusinessException(AuthErrorCode.NO_PERMISSION));
     }
 
 }

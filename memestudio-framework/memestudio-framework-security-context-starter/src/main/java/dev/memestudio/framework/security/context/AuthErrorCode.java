@@ -16,7 +16,10 @@ public enum AuthErrorCode implements ErrorCode {
 
     EMPTY_PERMISSIONS("auth-001", "您的授權信息已发生變更，請重新登錄", null),
     NO_PERMISSION("auth-002", "您沒有操作權限", null),
-    NEED_LOGIN("auth-003", "需要登陆", null);
+    NEED_LOGIN("auth-003", "需要登陆", null),
+    INVALID_LOGIN_MESSAGE("auth-004", "登陆信息有误", null),
+    ERROR_REFRESH_TOKEN("auth-005", "登陆刷新码错误", null),
+    ;
 
     private final String code;
 

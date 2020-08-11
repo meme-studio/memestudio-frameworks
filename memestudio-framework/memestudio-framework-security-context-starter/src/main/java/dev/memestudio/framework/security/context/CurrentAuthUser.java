@@ -15,6 +15,6 @@ public class CurrentAuthUser {
 
     private Set<String> permissions;
 
-    private ResourceAccess resourceAccess;
+    private ResourceAccess<? extends AccessType> resourceAccess;
 
 }

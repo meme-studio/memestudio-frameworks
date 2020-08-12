@@ -31,6 +31,7 @@ import java.util.Optional;
 
 import static io.vavr.API.*;
 import static io.vavr.Predicates.*;
+import static java.util.function.Function.identity;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -87,16 +88,23 @@ public class CommonErrorAttributes implements ErrorAttributes, HandlerExceptionR
                         )), this::handleParamException),
                         Case($(instanceOf(MethodArgumentNotValidException.class)),
                                 this::handleNotValidException),
+                        Case($(instanceOf(RemoteException.class)), identity()),
                         Case($(instanceOf(Exception.class)), this::handleException),
                         Case($(), () -> handleUnException(getAttribute(webRequest, RequestDispatcher.ERROR_STATUS_CODE)))
                 );
         TraceContext context = tracer.currentSpan()
                                      .context();
+
         return ErrorMessage.builder()
                            .note(errorCode.getNote())
                            .detail(errorCode.getDetail())
                            .code(errorCode.getCode())
-                           .from(appName)
+                           .from(Option(error)
+                                   .map(Throwable::getClass)
+                                   .filter(RemoteException.class::isAssignableFrom)
+                                   .map(__ -> (RemoteException) error)
+                                   .map(RemoteException::getFrom)
+                                   .getOrElse(appName))
                            .path(getAttribute(webRequest, RequestDispatcher.ERROR_REQUEST_URI))
                            .trace(context.toString())
                            .timestamp(System.currentTimeMillis())

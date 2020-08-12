@@ -21,7 +21,7 @@
 
         <dependency>
             <groupId>dev.memestudio.framework</groupId>
-            <artifactId>memestudio-framework-security-context-starter</artifactId>
+            <artifactId>memestudio-framework-security-context</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

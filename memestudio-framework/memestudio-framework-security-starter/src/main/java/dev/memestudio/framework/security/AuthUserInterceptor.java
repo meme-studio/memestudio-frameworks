@@ -51,7 +51,7 @@ public class AuthUserInterceptor extends HandlerInterceptorAdapter {
         CurrentAuthUser authUser = new CurrentAuthUser();
         authUser.setUserId(userId);
         authUser.setPermissions(permissionProvider.provide(authUser.getUserId()));
-        authUser.setResourceAccess(resourceAccessProvider.provider(authUser.getUserId()));
+        authUser.setResourceAccess(resourceAccessProvider.provide(authUser.getUserId()));
         AuthUserContext.setCurrent(authUser);
     }
 

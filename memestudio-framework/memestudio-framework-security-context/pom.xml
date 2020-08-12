@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>memestudio-framework-security-context-starter</artifactId>
+    <artifactId>memestudio-framework-security-context</artifactId>
 
     <dependencies>
         <dependency>

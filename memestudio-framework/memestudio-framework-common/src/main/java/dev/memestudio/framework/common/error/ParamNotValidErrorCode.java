@@ -9,18 +9,18 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public class ParamNotVaildErrorCode implements ErrorCode {
+public class ParamNotValidErrorCode implements ErrorCode {
 
-    private static final String noteTemplate = "請求參數有誤, %s";
+    private static final String noteTemplate = "請求參數有误, %s";
 
-    private final String code = "system-003";
+    private final String code = "system-002";
 
     private final String note;
 
     private final String detail;
 
     public static ErrorCode of(String message, String detail) {
-        return new ParamNotVaildErrorCode(String.format(noteTemplate, message), detail);
+        return new ParamNotValidErrorCode(String.format(noteTemplate, message), detail);
     }
 
 

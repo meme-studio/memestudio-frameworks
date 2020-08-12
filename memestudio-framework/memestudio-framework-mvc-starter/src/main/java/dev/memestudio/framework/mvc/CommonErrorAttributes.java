@@ -139,7 +139,7 @@ public class CommonErrorAttributes implements ErrorAttributes, HandlerExceptionR
                               .map(BindingResult::getFieldError)
                               .map(error -> String.format("'%s' %s", error.getField(), error.getDefaultMessage()))
                               .orElse("");
-        return ParamNotVaildErrorCode.of(note, ex.getMessage());
+        return ParamNotValidErrorCode.of(note, ex.getMessage());
     }
 
     /**

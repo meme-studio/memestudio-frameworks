@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HttpStatusUnOkErrorCode implements ErrorCode {
 
-    private final String code = "system-004";
+    private final String code = "system-003";
 
     private final String note;
 

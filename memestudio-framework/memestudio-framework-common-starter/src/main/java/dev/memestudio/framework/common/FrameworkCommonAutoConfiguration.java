@@ -1,5 +1,6 @@
 package dev.memestudio.framework.common;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.memestudio.framework.common.time.DateProvider;
 import dev.memestudio.framework.common.time.DateTimeProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,11 @@ public class FrameworkCommonAutoConfiguration {
     @Bean
     public DateTimeProvider dateTimeProvider() {
         return new DateTimeProvider() {};
+    }
+
+    @Bean
+    public FrameworkErrorDecoder frameworkErrorDecoder(ObjectMapper objectMapper) {
+        return new FrameworkErrorDecoder(objectMapper);
     }
 
 

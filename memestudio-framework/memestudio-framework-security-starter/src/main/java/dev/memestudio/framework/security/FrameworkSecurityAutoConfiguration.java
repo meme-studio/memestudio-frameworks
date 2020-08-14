@@ -1,6 +1,7 @@
 package dev.memestudio.framework.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.memestudio.framework.security.context.AccessTypeHeaderMapper;
 import dev.memestudio.framework.security.context.PermissionProvider;
 import dev.memestudio.framework.security.context.ResourceAccessProvider;
 import feign.Feign;
@@ -36,8 +37,8 @@ public class FrameworkSecurityAutoConfiguration implements WebMvcConfigurer {
     @Bean
     public AuthUserInterceptor authUserInterceptor(PermissionProvider permissionProvider,
                                                    ResourceAccessProvider resourceAccessProvider,
-                                                   ObjectMapper objectMapper) {
-        return new AuthUserInterceptor(permissionProvider, resourceAccessProvider, objectMapper);
+                                                   AccessTypeHeaderMapper accessTypeHeaderMapper) {
+        return new AuthUserInterceptor(permissionProvider, resourceAccessProvider, accessTypeHeaderMapper);
     }
 
     @Bean

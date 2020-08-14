@@ -8,6 +8,6 @@ import lombok.NonNull;
  */
 public interface ResourceAccessProvider {
 
-    ResourceAccess<? extends AccessType> provide(@NonNull String userId);
+    ResourceAccess provide(@NonNull String userId);
 
 }

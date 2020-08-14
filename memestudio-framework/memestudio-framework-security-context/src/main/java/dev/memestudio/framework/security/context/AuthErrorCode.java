@@ -19,6 +19,7 @@ public enum AuthErrorCode implements ErrorCode {
     NEED_LOGIN("auth-003", "需要登陆", null),
     INVALID_LOGIN_MESSAGE("auth-004", "登陆信息有误", null),
     ERROR_REFRESH_TOKEN("auth-005", "登陆刷新码错误", null),
+    NO_RESOURCE_ACCESS("auth-006", "您没有当前商户或门店的操作权限", null),
     ;
 
     private final String code;

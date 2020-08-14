@@ -12,7 +12,10 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.AbstractMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author meme
@@ -25,14 +28,20 @@ public class AuthUserInterceptor extends HandlerInterceptorAdapter {
 
     private final ResourceAccessProvider resourceAccessProvider;
 
-    private final ObjectMapper objectMapper;
+    private final AccessTypeHeaderMapper accessTypeHeaderMapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String userId = request.getHeader(AuthConstants.AUTH_USER_HEADER);
         checkLoginStatus(userId, handler);
+        Map<AccessType, String> currentResourceAccess =
+                accessTypeHeaderMapper.getMappings()
+                                      .entrySet()
+                                      .stream()
+                                      .map(mapping -> new AbstractMap.SimpleEntry<>(mapping.getKey(), request.getHeader(mapping.getValue())))
+                                      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         Option.of(userId)
-              .peek(this::determineAuthUser);
+              .peek(__ -> determineAuthUser(userId, currentResourceAccess));
         return true;
     }
 
@@ -46,12 +55,12 @@ public class AuthUserInterceptor extends HandlerInterceptorAdapter {
     }
 
     @SneakyThrows
-    private void determineAuthUser(String userIdString) {
-        String userId = objectMapper.readValue(userIdString, String.class);
+    private void determineAuthUser(String userId, Map<AccessType, String> currentResourceAccess) {
         CurrentAuthUser authUser = new CurrentAuthUser();
         authUser.setUserId(userId);
         authUser.setPermissions(permissionProvider.provide(authUser.getUserId()));
         authUser.setResourceAccess(resourceAccessProvider.provide(authUser.getUserId()));
+        authUser.setCurrentResourceAccess(currentResourceAccess);
         AuthUserContext.setCurrent(authUser);
     }
 

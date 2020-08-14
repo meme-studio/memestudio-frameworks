@@ -6,8 +6,8 @@ import java.util.List;
  * @author meme
  * @since 2020/8/9
  */
-public interface ResourceAccess<A extends AccessType> {
+public interface ResourceAccess {
 
-    List<String> listResourceIds(A type);
+    List<String> listResourceIds(AccessType type);
 
 }

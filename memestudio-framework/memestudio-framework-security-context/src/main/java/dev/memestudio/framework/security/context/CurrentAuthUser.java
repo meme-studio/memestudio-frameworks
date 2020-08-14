@@ -4,9 +4,7 @@ import dev.memestudio.framework.common.error.BusinessException;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author meme
@@ -21,6 +19,7 @@ public class CurrentAuthUser {
     @Setter
     private Set<String> permissions;
 
+    @Getter
     @Setter
     private ResourceAccess resourceAccess;
 
@@ -41,19 +40,12 @@ public class CurrentAuthUser {
     }
 
     public boolean hasResource(AccessType type, String resourceId) {
-        return Optional.ofNullable(resourceAccess.listResourceIds(type))
-                       .map(resourceIds ->
-                               resourceIds.contains(AuthConstants.AUTH_ALL_RESOURCE_ACCESS)
-                                       || resourceIds.contains(resourceId))
-                       .orElse(false);
+        List<String> resourceIds = resourceAccess.listResourceIds(type);
+        return Objects.isNull(resourceIds) || resourceIds.contains(resourceId);
     }
 
     public boolean hasPermission(String permission) {
-        return Optional.ofNullable(permissions)
-                       .map(__ ->
-                               permissions.contains(AuthConstants.AUTH_USER_PERMISSIONS)
-                                       || permissions.contains(permission))
-                       .orElse(false);
+        return Objects.isNull(permissions) || permissions.contains(permission);
     }
 
 }

@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class AccessTypeHeaderMapper {
 
-    private Map<AccessType, String> accessTypeHeaderMappings = new HashMap<>();
+    private final Map<AccessType, String> accessTypeHeaderMappings = new HashMap<>();
 
     public AccessTypeHeaderMapper mapping(AccessType accessType, String header) {
         accessTypeHeaderMappings.put(accessType, header);

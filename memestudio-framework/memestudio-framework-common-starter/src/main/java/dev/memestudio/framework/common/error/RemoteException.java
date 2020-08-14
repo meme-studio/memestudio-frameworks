@@ -1,7 +1,7 @@
 package dev.memestudio.framework.common.error;
 
 
-import lombok.AllArgsConstructor;
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 import lombok.Getter;
 
 /**
@@ -10,8 +10,7 @@ import lombok.Getter;
  * @author meme
  */
 @Getter
-@AllArgsConstructor
-public class RemoteException extends RuntimeException implements ErrorCode {
+public class RemoteException extends HystrixBadRequestException implements ErrorCode {
 
     private static final long serialVersionUID = -7416262267507234617L;
 
@@ -27,4 +26,11 @@ public class RemoteException extends RuntimeException implements ErrorCode {
         this(errorMessage.getCode(), errorMessage.getNote(), errorMessage.getDetail(), errorMessage.getFrom());
     }
 
+    public RemoteException(String code, String note, String detail, String from) {
+        super(String.format("远程调用[%s]错误业务异常：%s，详细信息：%s，异常代码：[%s]", from, note, detail, code));
+        this.code = code;
+        this.note = note;
+        this.detail = detail;
+        this.from = from;
+    }
 }

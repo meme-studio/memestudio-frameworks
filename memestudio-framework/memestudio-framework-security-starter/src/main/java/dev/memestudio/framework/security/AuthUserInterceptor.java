@@ -58,12 +58,12 @@ public class AuthUserInterceptor extends HandlerInterceptorAdapter {
 
     @SneakyThrows
     private void determineAuthUser(String userId, Map<AccessType, String> currentResourceAccess) {
-        CurrentAuthUser authUser = new CurrentAuthUser();
-        authUser.setUserId(userId);
-        authUser.setPermissions(permissionProvider.provide(authUser.getUserId()));
-        authUser.setResourceAccess(resourceAccessProvider.provide(authUser.getUserId()));
-        authUser.setCurrentResourceAccess(currentResourceAccess);
-        AuthUserContext.setCurrent(authUser);
+        AuthUserContext.setCurrent(new CurrentAuthUser(
+                userId,
+                permissionProvider.provide(userId),
+                resourceAccessProvider.provide(userId),
+                currentResourceAccess
+                ));
     }
 
     @Override

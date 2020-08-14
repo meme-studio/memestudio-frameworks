@@ -1,40 +1,39 @@
 package dev.memestudio.framework.security.context;
 
 import dev.memestudio.framework.common.error.BusinessException;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author meme
  * @since 2020/8/7
  */
+@Value
 public class CurrentAuthUser {
 
-    @Getter
-    @Setter
-    private String userId;
+    String userId;
 
-    @Setter
-    private Set<String> permissions;
+    Set<String> permissions;
 
-    @Getter
-    @Setter
-    private ResourceAccess resourceAccess;
+    ResourceAccess resourceAccess;
 
-    private Map<AccessType, String> currentResourceAccess;
+    Map<AccessType, String> currentResourceAccess;
 
-    public void setCurrentResourceAccess(Map<AccessType, String> currentResourceAccess) {
-        boolean hasResourceAccess = currentResourceAccess.entrySet()
-                                                         .stream()
-                                                         .allMatch(entry -> hasResource(entry.getKey(), entry.getValue()));
-        if (!hasResourceAccess) {
-            throw new BusinessException(AuthErrorCode.NO_RESOURCE_ACCESS);
-        }
+    public CurrentAuthUser(String userId, Set<String> permissions, ResourceAccess resourceAccess, Map<AccessType, String> currentResourceAccess) {
+        this.userId = userId;
+        this.permissions = permissions;
+        this.resourceAccess = resourceAccess;
+        currentResourceAccess.entrySet()
+                             .stream()
+                             .filter(entry -> hasResource(entry.getKey(), entry.getValue()))
+                             .findAny()
+                             .orElseThrow(() -> new BusinessException(AuthErrorCode.NO_RESOURCE_ACCESS));
         this.currentResourceAccess = currentResourceAccess;
     }
-
     public String currentResourceAccess(AccessType type) {
         return currentResourceAccess.get(type);
     }

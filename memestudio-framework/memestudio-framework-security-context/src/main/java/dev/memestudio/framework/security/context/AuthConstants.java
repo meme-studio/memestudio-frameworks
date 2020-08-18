@@ -22,6 +22,8 @@ public class AuthConstants {
 
     public static final String AUTH_TOKEN_STORE_REFRESH_TOKEN_KEY = "auth_token_store_refresh_token";
 
+    public static final String AUTH_TOKEN_STORE_USERS = "auth_token_store_users";
+
     public static final String AUTH_ALL_PERMISSION = "all_permissions_693d3ba5-f333-4c93-a386-3c2091d0e382";
 
     public static final String AUTH_ALL_RESOURCE_ACCESS = "auth_all_resource_access_83ebd2b4-4061-4fbb-96c4-e34ec300bf03";

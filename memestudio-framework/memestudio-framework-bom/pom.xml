@@ -45,6 +45,11 @@
             </dependency>
             <dependency>
                 <groupId>dev.memestudio.framework</groupId>
+                <artifactId>memestudio-framework-webflux-starter</artifactId>
+                <version>${memestudio-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.memestudio.framework</groupId>
                 <artifactId>memestudio-framework-redis-starter</artifactId>
                 <version>${memestudio-framework.version}</version>
             </dependency>
@@ -61,6 +66,11 @@
             <dependency>
                 <groupId>dev.memestudio.framework</groupId>
                 <artifactId>memestudio-framework-security-context</artifactId>
+                <version>${memestudio-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.memestudio.framework</groupId>
+                <artifactId>memestudio-framework-doc-gateway-starter</artifactId>
                 <version>${memestudio-framework.version}</version>
             </dependency>
         </dependencies>

@@ -7,6 +7,7 @@
         <module>memestudio-framework-common</module>
         <module>memestudio-framework-common-starter</module>
         <module>memestudio-framework-mvc-starter</module>
+        <module>memestudio-framework-webflux-starter</module>
         <module>memestudio-framework-redis-starter</module>
         <module>memestudio-framework-kafka-starter</module>
         <module>memestudio-framework-xxljob-starter</module>
@@ -15,6 +16,7 @@
         <module>memestudio-framework-security-starter</module>
         <module>memestudio-framework-security-context</module>
         <module>memestudio-framework-security-auth-server-starter</module>
+        <module>memestudio-framework-doc-gateway-starter</module>
     </modules>
     <parent>
         <groupId>dev.memestudio.framework</groupId>
@@ -27,7 +29,9 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
             </plugin>
         </plugins>
     </build>

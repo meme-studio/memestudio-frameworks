@@ -1,10 +1,6 @@
 package dev.memestudio.framework.security;
 
-import dev.memestudio.framework.common.error.BusinessException;
-import dev.memestudio.framework.security.context.AuthErrorCode;
-import dev.memestudio.framework.security.context.AuthUserContext;
-import dev.memestudio.framework.security.context.CurrentAuthUser;
-import dev.memestudio.framework.security.context.OnPermission;
+import dev.memestudio.framework.security.context.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -34,9 +30,9 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
     private void check(String permission) {
         CurrentAuthUser authUser =
                 Optional.ofNullable(AuthUserContext.current())
-                        .orElseThrow(() -> new BusinessException(AuthErrorCode.INVALID_LOGIN_MESSAGE));
+                        .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_LOGIN_MESSAGE));
         if (!authUser.hasPermission(permission)) {
-            throw new BusinessException(AuthErrorCode.NO_PERMISSION);
+            throw new AuthException(AuthErrorCode.NO_PERMISSION);
         }
     }
 

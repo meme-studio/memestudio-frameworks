@@ -299,13 +299,20 @@ public class RedisOps {
                      .count();
     }
 
-    public boolean exists(String key) {
+    public Boolean exists(String key) {
         return template.hasKey(toScopeKey(key));
     }
 
     public Set<String> keys(String pattern) {
         return template.keys(pattern);
     }
+
+
+    public Long ttl(String key) {
+        return template.getExpire(key, TimeUnit.SECONDS);
+    }
+
+
 
 
     private String toScopeKey(String key) {

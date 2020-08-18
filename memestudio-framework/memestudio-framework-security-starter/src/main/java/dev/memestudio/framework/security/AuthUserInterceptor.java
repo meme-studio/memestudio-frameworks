@@ -1,7 +1,5 @@
 package dev.memestudio.framework.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.memestudio.framework.common.error.BusinessException;
 import dev.memestudio.framework.security.context.*;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +51,7 @@ public class AuthUserInterceptor extends HandlerInterceptorAdapter {
                 .map(HandlerMethod.class::cast)
                 .map(handlerMethod -> handlerMethod.getMethodAnnotation(NeedLogin.class))
                 .ifPresent(__ -> Optional.ofNullable(userId)
-                                         .orElseThrow(() -> new BusinessException(AuthErrorCode.NEED_LOGIN)));
+                                         .orElseThrow(() -> new AuthException(AuthErrorCode.NEED_LOGIN)));
     }
 
     @SneakyThrows

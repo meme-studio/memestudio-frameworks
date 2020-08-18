@@ -1,12 +1,11 @@
 package dev.memestudio.framework.security.context;
 
-import dev.memestudio.framework.common.error.BusinessException;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Value;
+import org.apache.commons.collections4.MapUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author meme
@@ -21,17 +20,21 @@ public class CurrentAuthUser {
 
     ResourceAccess resourceAccess;
 
+    @Getter(AccessLevel.PRIVATE)
     Map<AccessType, String> currentResourceAccess;
 
     public CurrentAuthUser(String userId, Set<String> permissions, ResourceAccess resourceAccess, Map<AccessType, String> currentResourceAccess) {
         this.userId = userId;
         this.permissions = permissions;
         this.resourceAccess = resourceAccess;
-        currentResourceAccess.entrySet()
-                             .stream()
-                             .filter(entry -> hasResource(entry.getKey(), entry.getValue()))
-                             .findAny()
-                             .orElseThrow(() -> new BusinessException(AuthErrorCode.NO_RESOURCE_ACCESS));
+        Optional.of(currentResourceAccess)
+                .filter(MapUtils::isNotEmpty)
+                .ifPresent(__ -> currentResourceAccess.entrySet()
+                                                      .stream()
+                                                      .filter(entry -> hasResource(entry.getKey(), entry.getValue()))
+                                                      .findAny()
+                                                      .orElseThrow(() -> new AuthException(AuthErrorCode.NO_RESOURCE_ACCESS)));
+
         this.currentResourceAccess = currentResourceAccess;
     }
     public String currentResourceAccess(AccessType type) {

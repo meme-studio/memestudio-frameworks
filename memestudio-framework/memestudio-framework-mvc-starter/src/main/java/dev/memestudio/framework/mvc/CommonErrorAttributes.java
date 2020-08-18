@@ -7,16 +7,11 @@ import dev.memestudio.framework.common.error.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.TypeMismatchException;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -27,11 +22,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
 
 import static io.vavr.API.*;
-import static io.vavr.Predicates.*;
-import static java.util.function.Function.identity;
+import static io.vavr.Predicates.instanceOf;
+import static io.vavr.Predicates.is;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -80,15 +74,6 @@ public class CommonErrorAttributes implements ErrorAttributes, HandlerExceptionR
         Throwable error = getError(webRequest);
         ErrorCode errorCode =
                 Match(error).of(
-                        Case($(instanceOf(BusinessException.class)), this::handleBusinessException),
-                        Case($(anyOf(
-                                instanceOf(ServletRequestBindingException.class),
-                                instanceOf(HttpMessageNotReadableException.class),
-                                instanceOf(TypeMismatchException.class)
-                        )), this::handleParamException),
-                        Case($(instanceOf(MethodArgumentNotValidException.class)),
-                                this::handleNotValidException),
-                        Case($(instanceOf(RemoteException.class)), identity()),
                         Case($(instanceOf(Exception.class)), this::handleException),
                         Case($(), () -> handleUnException(getAttribute(webRequest, RequestDispatcher.ERROR_STATUS_CODE)))
                 );
@@ -123,39 +108,14 @@ public class CommonErrorAttributes implements ErrorAttributes, HandlerExceptionR
         return SystemErrorCode.of(hashCode, ex.getMessage());
     }
 
-    /**
-     * 业务异常
-     */
-    private ErrorCode handleBusinessException(BusinessException ex) {
-        log.warn(ex.getMessage());
-        return ex;
-    }
-
-    /**
-     * 参数异常
-     */
-    private ErrorCode handleParamException(Exception ex) {
-        return ParamErrorCode.of(ex.hashCode(), ex.getMessage());
-    }
-
-    /**
-     * 参数异常
-     */
-    private ErrorCode handleNotValidException(MethodArgumentNotValidException ex) {
-        String note = Optional.of(ex)
-                              .map(MethodArgumentNotValidException::getBindingResult)
-                              .map(BindingResult::getFieldError)
-                              .map(error -> String.format("'%s' %s", error.getField(), error.getDefaultMessage()))
-                              .orElse("");
-        return ParamNotValidErrorCode.of(note, ex.getMessage());
-    }
 
     /**
      * 非异常情况
      */
     private ErrorCode handleUnException(int status) {
         return Match(status).of(
-                Case($(is(HttpStatus.NOT_FOUND.value())), () -> HttpStatusUnOkErrorCode.of("请求资源未找到")),
+                Case($(is(HttpStatus.NOT_FOUND.value())), () -> HttpStatusUnOkErrorCode.of("請求資源未找到")),
+                Case($(is(HttpStatus.SERVICE_UNAVAILABLE.value())), () -> HttpStatusUnOkErrorCode.of("當前服務不可用，請稍后重試")),
                 Case($(), () -> HttpStatusUnOkErrorCode.of(String.format("访问失败：%d", status)))
         );
     }

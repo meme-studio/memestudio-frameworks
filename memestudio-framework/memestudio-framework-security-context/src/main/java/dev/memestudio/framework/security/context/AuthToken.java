@@ -17,4 +17,6 @@ public class AuthToken {
 
     private String refreshToken;
 
+    private long expiresIn;
+
 }

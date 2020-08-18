@@ -1,4 +1,4 @@
-package dev.memestudio.framework.common;
+package dev.memestudio.framework.jpa;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

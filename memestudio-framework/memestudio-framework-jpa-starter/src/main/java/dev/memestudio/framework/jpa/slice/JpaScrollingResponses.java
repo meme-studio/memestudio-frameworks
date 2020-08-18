@@ -1,6 +1,7 @@
-package dev.memestudio.framework.common.slice;
+package dev.memestudio.framework.jpa.slice;
 
 import com.querydsl.core.QueryResults;
+import dev.memestudio.framework.common.slice.ScrollingResponse;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
 

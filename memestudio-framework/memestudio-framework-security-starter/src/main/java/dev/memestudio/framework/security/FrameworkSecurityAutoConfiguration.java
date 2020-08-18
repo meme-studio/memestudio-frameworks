@@ -2,13 +2,12 @@ package dev.memestudio.framework.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.memestudio.framework.security.context.AccessTypeHeaderMapper;
-import dev.memestudio.framework.security.context.PermissionProvider;
-import dev.memestudio.framework.security.context.ResourceAccessProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -34,11 +33,10 @@ public class FrameworkSecurityAutoConfiguration implements WebMvcConfigurer {
         return new PermissionInterceptor();
     }
 
+    @Lazy
     @Bean
-    public AuthUserInterceptor authUserInterceptor(PermissionProvider permissionProvider,
-                                                   ResourceAccessProvider resourceAccessProvider,
-                                                   AccessTypeHeaderMapper accessTypeHeaderMapper) {
-        return new AuthUserInterceptor(permissionProvider, resourceAccessProvider, accessTypeHeaderMapper);
+    public AuthUserInterceptor authUserInterceptor(AccessTypeHeaderMapper accessTypeHeaderMapper) {
+        return new AuthUserInterceptor(accessTypeHeaderMapper);
     }
 
     @Bean

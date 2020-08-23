@@ -6,12 +6,14 @@ import dev.memestudio.framework.common.error.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,8 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.vavr.API.*;
-import static io.vavr.Predicates.instanceOf;
-import static io.vavr.Predicates.is;
+import static io.vavr.Predicates.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -70,6 +71,12 @@ public class CommonErrorAttributes implements ErrorAttributes {
         MergedAnnotation<ResponseStatus> responseStatusAnnotation = MergedAnnotations
                 .from(error.getClass(), MergedAnnotations.SearchStrategy.TYPE_HIERARCHY).get(ResponseStatus.class);
         return Match(error).of(
+                Case($(instanceOf(BusinessException.class)), ex -> handleBusinessException(ex, request)),
+                Case($(anyOf(
+                        instanceOf(MethodArgumentNotValidException.class),
+                        instanceOf(TypeMismatchException.class)
+                )), ex -> handleParamException(ex, request)),
+                Case($(instanceOf(RemoteException.class)), RemoteException::getErrorMessage),
                 Case($(instanceOf(Exception.class)), ex -> handleException(ex, request)),
                 Case($(), () -> handleUnException(determineHttpStatus(error, responseStatusAnnotation), request))
         );
@@ -101,6 +108,22 @@ public class CommonErrorAttributes implements ErrorAttributes {
         log.error("发生系统异常, hash值为[{}]", hashCode);
         log.error(ex.getMessage(), ex);
         ErrorCode errorCode = SystemErrorCode.of(hashCode, ex.getMessage());
+        return buildErrorMessage(request, ex, errorCode);
+    }
+
+    /**
+     * 业务异常
+     */
+    private ErrorMessage handleBusinessException(BusinessException ex, ServerRequest request) {
+        log.warn(ex.getMessage());
+        return buildErrorMessage(request, ex, ex);
+    }
+
+    /**
+     * 参数异常
+     */
+    private ErrorMessage handleParamException(Exception ex, ServerRequest request) {
+        ErrorCode errorCode = ParamErrorCode.of(ex.hashCode(), ex.getMessage());
         return buildErrorMessage(request, ex, errorCode);
     }
 

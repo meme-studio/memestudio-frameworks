@@ -17,8 +17,8 @@ import java.util.Map;
 public class FrameworkAuthServerAutoConfiguration {
 
     @Bean
-    public TokenToUserIdFilter tokenToUserIdFilter() {
-        return new TokenToUserIdFilter();
+    public TokenToUserIdFilter tokenToUserIdFilter(AuthTokenStore authTokenStore) {
+        return new TokenToUserIdFilter(authTokenStore);
     }
 
     @Bean

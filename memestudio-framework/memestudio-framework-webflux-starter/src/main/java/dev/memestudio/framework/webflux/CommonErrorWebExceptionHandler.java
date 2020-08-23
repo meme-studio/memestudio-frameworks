@@ -1,5 +1,8 @@
 package dev.memestudio.framework.webflux;
 
+import dev.memestudio.framework.common.error.BusinessException;
+import dev.memestudio.framework.common.error.RemoteException;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
@@ -10,6 +13,7 @@ import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -148,6 +152,12 @@ public class CommonErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     private HttpStatus determineHttpStatus(Throwable error, MergedAnnotation<ResponseStatus> responseStatusAnnotation) {
         if (error instanceof ResponseStatusException) {
             return ((ResponseStatusException) error).getStatus();
+        } else if (error instanceof BusinessException
+                || error instanceof MethodArgumentNotValidException
+                || error instanceof TypeMismatchException) {
+            return HttpStatus.BAD_REQUEST;
+        } else if (error instanceof RemoteException) {
+            return HttpStatus.valueOf(((RemoteException) error).getStatus());
         }
         return responseStatusAnnotation.getValue("code", HttpStatus.class).orElse(HttpStatus.INTERNAL_SERVER_ERROR);
     }

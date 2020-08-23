@@ -12,6 +12,8 @@ public interface ErrorCode {
 
     String getNote();
 
-    String getDetail();
+    default String getDetail() {
+        return null;
+    }
 
 }

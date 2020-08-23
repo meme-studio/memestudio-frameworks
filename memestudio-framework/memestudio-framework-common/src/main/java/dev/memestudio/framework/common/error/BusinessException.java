@@ -17,21 +17,21 @@ public class BusinessException extends RuntimeException implements ErrorCode {
 
     private final String note;
 
-    private final String detail;
+    private final Object errorParam;
 
     public BusinessException(ErrorCode errorCode) {
-        this(errorCode.getCode(), errorCode.getNote(), errorCode.getDetail());
+        this(errorCode.getCode(), errorCode.getNote(), null);
     }
 
-    public BusinessException(ErrorCode errorCode, Object... params) {
-        this(errorCode.getCode(), String.format(errorCode.getNote(), params), errorCode.getDetail());
+    public BusinessException(ErrorCode errorCode, Object errorParam, Object... noteParams) {
+        this(errorCode.getCode(), String.format(errorCode.getNote(), noteParams), errorParam);
     }
 
-    private BusinessException(String code, String note, String detail) {
-        super(String.format("业务异常：%s，详细信息：%s，异常代码：[%s]", note, detail, code));
+    private BusinessException(String code, String note, Object errorParam) {
+        super(String.format("业务异常：%s，异常代码：[%s]", note, code));
         this.code = code;
         this.note = note;
-        this.detail = detail;
+        this.errorParam = errorParam;
     }
 
 

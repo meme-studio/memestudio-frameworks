@@ -32,6 +32,8 @@ public class ErrorMessage implements ErrorCode {
 
     private String note;
 
+    private Object errorParam;
+
     private String detail;
 
     private long timestamp;

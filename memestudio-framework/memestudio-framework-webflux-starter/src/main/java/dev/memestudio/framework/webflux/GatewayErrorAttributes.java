@@ -1,7 +1,6 @@
 package dev.memestudio.framework.webflux;
 
 import brave.Tracer;
-import brave.propagation.TraceContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.memestudio.framework.common.error.*;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +21,10 @@ import org.springframework.web.server.ServerWebExchange;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 import static io.vavr.API.*;
 import static io.vavr.Predicates.*;
-import static java.util.function.Function.identity;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -71,69 +70,71 @@ public class GatewayErrorAttributes implements ErrorAttributes {
         Throwable error = getError(request);
         MergedAnnotation<ResponseStatus> responseStatusAnnotation = MergedAnnotations
                 .from(error.getClass(), MergedAnnotations.SearchStrategy.TYPE_HIERARCHY).get(ResponseStatus.class);
-        ErrorCode errorCode =
-                Match(error).of(
-                        Case($(instanceOf(BusinessException.class)), this::handleBusinessException),
-                        Case($(anyOf(
-                                instanceOf(MethodArgumentNotValidException.class),
-                                instanceOf(TypeMismatchException.class)
-                        )), this::handleParamException),
-                        Case($(instanceOf(RemoteException.class)), identity()),
-                        Case($(instanceOf(Exception.class)), this::handleException),
-                        Case($(), () -> handleUnException(determineHttpStatus(error, responseStatusAnnotation)))
-                );
-        TraceContext context = tracer.currentSpan()
-                                     .context();
+        return Match(error).of(
+                Case($(instanceOf(BusinessException.class)), ex -> handleBusinessException(ex, request)),
+                Case($(anyOf(
+                        instanceOf(MethodArgumentNotValidException.class),
+                        instanceOf(TypeMismatchException.class)
+                )), ex -> handleParamException(ex, request)),
+                Case($(instanceOf(RemoteException.class)), RemoteException::getErrorMessage),
+                Case($(instanceOf(Exception.class)), ex -> handleException(ex, request)),
+                Case($(), () -> handleUnException(determineHttpStatus(error, responseStatusAnnotation), request))
+        );
+    }
+
+    private ErrorMessage buildErrorMessage(ServerRequest request, Throwable error, ErrorCode errorCode) {
         return ErrorMessage.builder()
+                           .errorParam(Optional.ofNullable(error)
+                                               .filter(BusinessException.class::isInstance)
+                                               .map(BusinessException.class::cast)
+                                               .map(BusinessException::getErrorParam)
+                                               .orElse(null))
                            .note(errorCode.getNote())
                            .detail(errorCode.getDetail())
                            .code(errorCode.getCode())
-                           .from(Option(error)
-                                   .map(Throwable::getClass)
-                                   .filter(RemoteException.class::isAssignableFrom)
-                                   .map(__ -> (RemoteException) error)
-                                   .map(RemoteException::getFrom)
-                                   .getOrElse(appName))
+                           .from(appName)
                            .path(request.exchange().getRequest().getPath().toString())
-                           .trace(context.toString())
+                           .trace(tracer.currentSpan().context().toString())
                            .timestamp(System.currentTimeMillis())
                            .errorStacks(Arrays.asList(ExceptionUtils.getRootCauseStackTrace(error)))//TODO 暂时实现
                            .build();
-
     }
 
     /**
      * 其他系统非预期异常
      */
-    private ErrorCode handleException(Exception ex) {
+    private ErrorMessage handleException(Exception ex, ServerRequest request) {
         int hashCode = ex.hashCode();
         log.error("发生系统异常, hash值为[{}]", hashCode);
         log.error(ex.getMessage(), ex);
-        return SystemErrorCode.of(hashCode, ex.getMessage());
+        ErrorCode errorCode = SystemErrorCode.of(hashCode, ex.getMessage());
+        return buildErrorMessage(request, ex, errorCode);
     }
 
     /**
      * 业务异常
      */
-    private ErrorCode handleBusinessException(BusinessException ex) {
+    private ErrorMessage handleBusinessException(BusinessException ex, ServerRequest request) {
         log.warn(ex.getMessage());
-        return ex;
+        return buildErrorMessage(request, ex, ex);
     }
 
     /**
      * 参数异常
      */
-    private ErrorCode handleParamException(Exception ex) {
-        return ParamErrorCode.of(ex.hashCode(), ex.getMessage());
+    private ErrorMessage handleParamException(Exception ex, ServerRequest request) {
+        ErrorCode errorCode = ParamErrorCode.of(ex.hashCode(), ex.getMessage());
+        return buildErrorMessage(request, ex, errorCode);
     }
 
     /**
      * 非异常情况
      */
-    private ErrorCode handleUnException(HttpStatus status) {
-        return Match(status).of(
+    private ErrorMessage handleUnException(HttpStatus status, ServerRequest request) {
+        ErrorCode errorCode = Match(status).of(
                 Case($(is(HttpStatus.NOT_FOUND)), () -> HttpStatusUnOkErrorCode.of("请求资源未找到")),
                 Case($(), () -> HttpStatusUnOkErrorCode.of(String.format("访问失败：%d", status.value())))
         );
+        return buildErrorMessage(request, null, errorCode);
     }
 }

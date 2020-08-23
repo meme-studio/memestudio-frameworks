@@ -10,27 +10,18 @@ import lombok.Getter;
  * @author meme
  */
 @Getter
-public class RemoteException extends HystrixBadRequestException implements ErrorCode {
+public class RemoteException extends HystrixBadRequestException {
 
     private static final long serialVersionUID = -7416262267507234617L;
 
-    private final String code;
+    private final ErrorMessage errorMessage;
 
-    private final String note;
+    private final int status;
 
-    private final String detail;
-
-    private final String from;
-
-    public RemoteException(ErrorMessage errorMessage) {
-        this(errorMessage.getCode(), errorMessage.getNote(), errorMessage.getDetail(), errorMessage.getFrom());
-    }
-
-    public RemoteException(String code, String note, String detail, String from) {
-        super(String.format("远程调用[%s]错误业务异常：%s，详细信息：%s，异常代码：[%s]", from, note, detail, code));
-        this.code = code;
-        this.note = note;
-        this.detail = detail;
-        this.from = from;
+    public RemoteException(ErrorMessage errorMessage, int status) {
+        super(String.format("远程调用[%s]错误业务异常：%s，详细信息：%s，异常代码：[%s]",
+                errorMessage.getFrom(), errorMessage.getNote(), errorMessage.getDetail(), errorMessage.getCode()));
+        this.errorMessage = errorMessage;
+        this.status = status;
     }
 }

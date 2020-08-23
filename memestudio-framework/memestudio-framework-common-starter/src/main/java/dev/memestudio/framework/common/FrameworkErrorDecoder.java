@@ -28,6 +28,6 @@ public class FrameworkErrorDecoder implements ErrorDecoder {
     public Exception decode(String methodKey, Response response) {
         @Cleanup Reader body = response.body().asReader(StandardCharsets.UTF_8);
         ErrorMessage errorMessage = objectMapper.readValue(body, ErrorMessage.class);
-        return new RemoteException(errorMessage);
+        return new RemoteException(errorMessage, response.status());
     }
 }

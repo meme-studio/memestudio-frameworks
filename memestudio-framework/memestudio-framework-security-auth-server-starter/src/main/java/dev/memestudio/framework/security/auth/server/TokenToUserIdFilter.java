@@ -1,6 +1,5 @@
 package dev.memestudio.framework.security.auth.server;
 
-import dev.memestudio.framework.redis.RedisOps;
 import dev.memestudio.framework.security.context.AuthConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -20,15 +19,19 @@ import static java.util.stream.Collectors.toMap;
 public class TokenToUserIdFilter implements GlobalFilter {
 
     @Autowired
-    private RedisOps redisOps;
+    private AuthTokenStore authTokenStore;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpRequest request =
-                Optional.ofNullable(exchange.getRequest().getHeaders().getFirst(AuthConstants.TOKEN_HEADER))
-                        .map(token -> redisOps.get(AuthConstants.AUTH_TOKEN_STORE_TOKEN_KEY + ":" + token))
-                        .map(user -> exchange.getRequest().mutate().header(AuthConstants.AUTH_USER_HEADER, user).build())
-                        .orElseGet(() -> getNoAuthHeaderRequest(exchange));
+        String token = exchange.getRequest().getHeaders().getFirst(AuthConstants.TOKEN_HEADER);
+        String scope = exchange.getRequest().getHeaders().getFirst(AuthConstants.SCOPE_HEADER);
+        ServerHttpRequest request = Optional.ofNullable(token)
+                                            .map(__ -> authTokenStore.getUserId(token, scope))
+                                            .map(userId -> exchange.getRequest()
+                                                                   .mutate()
+                                                                   .header(AuthConstants.AUTH_USER_HEADER, userId)
+                                                                   .build())
+                                            .orElseGet(() -> getNoAuthHeaderRequest(exchange));
         return chain.filter(exchange.mutate()
                                     .request(request)
                                     .build());

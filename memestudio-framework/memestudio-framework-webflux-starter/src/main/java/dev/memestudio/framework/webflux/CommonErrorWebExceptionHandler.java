@@ -29,7 +29,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
  * @author meme
  * @since 2020/8/4
  */
-public class GatewayErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler {
+public class CommonErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler {
 
 
     private final ErrorProperties errorProperties;
@@ -41,8 +41,8 @@ public class GatewayErrorWebExceptionHandler extends AbstractErrorWebExceptionHa
      * @param errorProperties the error configuration properties
      * @param applicationContext the current application context
      */
-    public GatewayErrorWebExceptionHandler(ErrorAttributes errorAttributes, ResourceProperties resourceProperties,
-                                           ErrorProperties errorProperties, ApplicationContext applicationContext) {
+    public CommonErrorWebExceptionHandler(ErrorAttributes errorAttributes, ResourceProperties resourceProperties,
+                                          ErrorProperties errorProperties, ApplicationContext applicationContext) {
         super(errorAttributes, resourceProperties, applicationContext);
         this.errorProperties = errorProperties;
     }
@@ -153,7 +153,7 @@ public class GatewayErrorWebExceptionHandler extends AbstractErrorWebExceptionHa
     }
 
     public Throwable getError(ServerRequest request) {
-        return (Throwable) request.attribute(GatewayErrorAttributes.ERROR_ATTRIBUTE)
+        return (Throwable) request.attribute(CommonErrorAttributes.ERROR_ATTRIBUTE)
                                   .orElseThrow(() -> new IllegalStateException("Missing exception attribute in ServerWebExchange"));
     }
 }

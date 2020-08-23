@@ -47,9 +47,9 @@ public class FrameworkMvcAutoConfiguration {
     }
 
     @Bean
-    public BasicErrorController basicErrorController(ErrorAttributes errorAttributes,
-                                                     ObjectProvider<ErrorViewResolver> errorViewResolvers) {
-        return new BasicErrorController(errorAttributes, this.serverProperties.getError(),
+    public CommonErrorController basicErrorController(ErrorAttributes errorAttributes,
+                                                      ObjectProvider<ErrorViewResolver> errorViewResolvers) {
+        return new CommonErrorController(errorAttributes, this.serverProperties.getError(),
                 errorViewResolvers.orderedStream().collect(Collectors.toList()));
     }
 

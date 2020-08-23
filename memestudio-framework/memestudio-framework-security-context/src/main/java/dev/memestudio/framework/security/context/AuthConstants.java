@@ -10,10 +10,6 @@ public class AuthConstants {
 
     public static final String TOKEN_HEADER = "x-token";
 
-    public static final String ACCOUNT_HEADER = "x-account";
-
-    public static final String PASSWORD_HEADER = "x-password";
-
     public static final String SCOPE_HEADER = "x-scope";
 
     public static final String AUTH_USER_PERMISSIONS = "memestudio_framework_auth_user_permission";

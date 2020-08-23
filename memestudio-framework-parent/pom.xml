@@ -25,9 +25,9 @@
         <maven.test.skip>true</maven.test.skip>
         <skipTests>true</skipTests>
 
-        <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
+        <spring-boot.version>2.3.3.RELEASE</spring-boot.version>
         <spring-cloud-alibaba.version>2.2.1.RELEASE</spring-cloud-alibaba.version>
-        <spring-cloud.version>Hoxton.SR6</spring-cloud.version>
+        <spring-cloud.version>Hoxton.SR7</spring-cloud.version>
 
         <logbook.version>2.1.0</logbook.version>
         <guava.version>20.0</guava.version>

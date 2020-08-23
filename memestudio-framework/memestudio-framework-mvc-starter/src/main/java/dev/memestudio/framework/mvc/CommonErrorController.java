@@ -38,27 +38,27 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("${server.error.path:${error.path:/error}}")
-public class BasicErrorController extends AbstractErrorController {
+public class CommonErrorController extends AbstractErrorController {
 
 	private final ErrorProperties errorProperties;
 
 	/**
-	 * Create a new {@link BasicErrorController} instance.
+	 * Create a new {@link CommonErrorController} instance.
 	 * @param errorAttributes the error attributes
 	 * @param errorProperties configuration properties
 	 */
-	public BasicErrorController(ErrorAttributes errorAttributes, ErrorProperties errorProperties) {
+	public CommonErrorController(ErrorAttributes errorAttributes, ErrorProperties errorProperties) {
 		this(errorAttributes, errorProperties, Collections.emptyList());
 	}
 
 	/**
-	 * Create a new {@link BasicErrorController} instance.
+	 * Create a new {@link CommonErrorController} instance.
 	 * @param errorAttributes the error attributes
 	 * @param errorProperties configuration properties
 	 * @param errorViewResolvers error view resolvers
 	 */
-	public BasicErrorController(ErrorAttributes errorAttributes, ErrorProperties errorProperties,
-			List<ErrorViewResolver> errorViewResolvers) {
+	public CommonErrorController(ErrorAttributes errorAttributes, ErrorProperties errorProperties,
+								 List<ErrorViewResolver> errorViewResolvers) {
 		super(errorAttributes, errorViewResolvers);
 		Assert.notNull(errorProperties, "ErrorProperties must not be null");
 		this.errorProperties = errorProperties;

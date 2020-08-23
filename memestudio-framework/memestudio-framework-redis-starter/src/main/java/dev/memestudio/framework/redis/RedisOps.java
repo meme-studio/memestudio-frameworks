@@ -304,12 +304,11 @@ public class RedisOps {
     }
 
     public Set<String> keys(String pattern) {
-        return template.keys(pattern);
+        return template.keys(toScopeKey(pattern));
     }
 
-
     public Long ttl(String key) {
-        return template.getExpire(key, TimeUnit.SECONDS);
+        return template.getExpire(toScopeKey(key), TimeUnit.SECONDS);
     }
 
 

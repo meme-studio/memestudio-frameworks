@@ -73,6 +73,11 @@
                 <artifactId>memestudio-framework-doc-gateway-starter</artifactId>
                 <version>${memestudio-framework.version}</version>
             </dependency>
+            <dependency>
+                <groupId>dev.memestudio.framework</groupId>
+                <artifactId>memestudio-framework-security-auth-server-starter</artifactId>
+                <version>${memestudio-framework.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

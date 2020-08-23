@@ -37,7 +37,7 @@ public class FrameworkWebfluxAutoConfiguration {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public ErrorAttributes errorAttributes(ObjectMapper objectMapper,
                                            @Value("${spring.application.name}") String appName, Tracer tracer) {
-        return new GatewayErrorAttributes(objectMapper, appName, tracer);
+        return new CommonErrorAttributes(objectMapper, appName, tracer);
     }
 
     @Bean
@@ -45,12 +45,17 @@ public class FrameworkWebfluxAutoConfiguration {
     public ErrorWebExceptionHandler errorWebExceptionHandler(ErrorAttributes errorAttributes,
                                                              ResourceProperties resourceProperties, ObjectProvider<ViewResolver> viewResolvers,
                                                              ServerCodecConfigurer serverCodecConfigurer, ApplicationContext applicationContext) {
-        GatewayErrorWebExceptionHandler exceptionHandler = new GatewayErrorWebExceptionHandler(errorAttributes,
+        CommonErrorWebExceptionHandler exceptionHandler = new CommonErrorWebExceptionHandler(errorAttributes,
                 resourceProperties, this.serverProperties.getError(), applicationContext);
         exceptionHandler.setViewResolvers(viewResolvers.orderedStream().collect(Collectors.toList()));
         exceptionHandler.setMessageWriters(serverCodecConfigurer.getWriters());
         exceptionHandler.setMessageReaders(serverCodecConfigurer.getReaders());
         return exceptionHandler;
+    }
+
+    @Bean
+    public CommonExceptionHandler commonExceptionHandler(@Value("${spring.application.name}") String appName, Tracer tracer) {
+        return new CommonExceptionHandler(appName, tracer);
     }
 
 

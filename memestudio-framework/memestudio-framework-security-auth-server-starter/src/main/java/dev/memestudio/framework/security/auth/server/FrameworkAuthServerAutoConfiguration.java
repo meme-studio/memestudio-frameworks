@@ -8,6 +8,9 @@ import dev.memestudio.framework.security.context.UserIdService;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.config.CorsRegistry;
+import org.springframework.web.reactive.config.EnableWebFlux;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 import java.util.Map;
 
@@ -15,9 +18,10 @@ import java.util.Map;
  * @author meme
  * @since 2020/8/15
  */
+@EnableWebFlux
 @EnableConfigurationProperties(FrameworkAuthServerProperties.class)
 @Configuration
-public class FrameworkAuthServerAutoConfiguration {
+public class FrameworkAuthServerAutoConfiguration implements WebFluxConfigurer {
 
     @Bean
     public TokenToUserIdFilter tokenToUserIdFilter(AuthTokenStore authTokenStore) {
@@ -32,6 +36,14 @@ public class FrameworkAuthServerAutoConfiguration {
     @Bean
     public AuthTokenStore authTokenStore(RedisOps redisOps, FrameworkAuthServerProperties properties) {
         return new AuthTokenStore(redisOps, properties.getTokenTimeout(), properties.getRefreshTokenTimeout());
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/token/**")
+                .allowedHeaders("*")
+                .allowedMethods("*")
+                .allowedOrigins("*");
     }
 
 }

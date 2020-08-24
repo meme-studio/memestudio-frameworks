@@ -17,6 +17,7 @@
         <module>memestudio-framework-security-context</module>
         <module>memestudio-framework-security-auth-server-starter</module>
         <module>memestudio-framework-doc-gateway-starter</module>
+        <module>memestudio-framework-client-starter</module>
     </modules>
     <parent>
         <groupId>dev.memestudio.framework</groupId>

@@ -78,6 +78,11 @@
                 <artifactId>memestudio-framework-security-auth-server-starter</artifactId>
                 <version>${memestudio-framework.version}</version>
             </dependency>
+            <dependency>
+                <groupId>dev.memestudio.framework</groupId>
+                <artifactId>memestudio-framework-client-starter</artifactId>
+                <version>${memestudio-framework.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

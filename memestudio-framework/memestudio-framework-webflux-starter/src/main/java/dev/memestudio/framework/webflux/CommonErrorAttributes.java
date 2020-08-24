@@ -76,7 +76,6 @@ public class CommonErrorAttributes implements ErrorAttributes {
                         instanceOf(MethodArgumentNotValidException.class),
                         instanceOf(TypeMismatchException.class)
                 )), ex -> handleParamException(ex, request)),
-                Case($(instanceOf(RemoteException.class)), RemoteException::getErrorMessage),
                 Case($(instanceOf(Exception.class)), ex -> handleException(ex, request)),
                 Case($(), () -> handleUnException(determineHttpStatus(error, responseStatusAnnotation), request))
         );

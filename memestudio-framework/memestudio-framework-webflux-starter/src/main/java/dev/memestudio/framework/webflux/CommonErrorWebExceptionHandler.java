@@ -1,7 +1,6 @@
 package dev.memestudio.framework.webflux;
 
 import dev.memestudio.framework.common.error.BusinessException;
-import dev.memestudio.framework.common.error.RemoteException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
@@ -156,8 +155,6 @@ public class CommonErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
                 || error instanceof MethodArgumentNotValidException
                 || error instanceof TypeMismatchException) {
             return HttpStatus.BAD_REQUEST;
-        } else if (error instanceof RemoteException) {
-            return HttpStatus.valueOf(((RemoteException) error).getStatus());
         }
         return responseStatusAnnotation.getValue("code", HttpStatus.class).orElse(HttpStatus.INTERNAL_SERVER_ERROR);
     }

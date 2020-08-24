@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.validation.BindingResult;
@@ -53,14 +52,6 @@ public class CommonExceptionHandler {
                            .build();
     }
 
-    /**
-     * 远程调用异常
-     */
-    @ExceptionHandler(RemoteException.class)
-    public ResponseEntity<ErrorMessage> handleRemoteException(RemoteException ex) {
-        log.warn(ex.getMessage(), ex);
-        return ResponseEntity.status(ex.getStatus()).body(ex.getErrorMessage());
-    }
 
     /**
      * 业务异常

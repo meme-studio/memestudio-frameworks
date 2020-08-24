@@ -1,7 +1,8 @@
-package dev.memestudio.framework.common.error;
+package dev.memestudio.framework.client.error;
 
 
 import com.netflix.hystrix.exception.HystrixBadRequestException;
+import dev.memestudio.framework.common.error.ErrorMessage;
 import lombok.Getter;
 
 /**

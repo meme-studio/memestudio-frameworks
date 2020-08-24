@@ -1,8 +1,7 @@
-package dev.memestudio.framework.common;
+package dev.memestudio.framework.client.error;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.memestudio.framework.common.error.ErrorMessage;
-import dev.memestudio.framework.common.error.RemoteException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,7 @@ import java.nio.charset.StandardCharsets;
  * @since 2019-01-23 10:38
  */
 @AllArgsConstructor
-public class FrameworkErrorDecoder implements ErrorDecoder {
+public class ClientErrorDecoder implements ErrorDecoder {
 
     private final ObjectMapper objectMapper;
 

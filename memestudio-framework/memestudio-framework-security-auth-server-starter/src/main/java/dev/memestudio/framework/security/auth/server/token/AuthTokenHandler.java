@@ -1,15 +1,13 @@
 package dev.memestudio.framework.security.auth.server.token;
 
-import dev.memestudio.framework.security.context.ExpirationMessage;
-import dev.memestudio.framework.security.context.LoginMessage;
-import dev.memestudio.framework.security.context.RefreshMessage;
-import dev.memestudio.framework.security.context.UserIdService;
+import dev.memestudio.framework.security.context.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin
 @Api(tags = "token管理")
@@ -27,6 +25,8 @@ public class AuthTokenHandler {
     public AuthToken get(@RequestBody LoginMessage loginMessage) {
         UserIdService userIdService = userIdServices.get(loginMessage.getScope());
         String userId = userIdService.get(loginMessage);
+        Optional.ofNullable(userId)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_LOGIN_MESSAGE));
         return authTokenStore.fetchOrGenerate(userId, loginMessage.getScope());
     }
 

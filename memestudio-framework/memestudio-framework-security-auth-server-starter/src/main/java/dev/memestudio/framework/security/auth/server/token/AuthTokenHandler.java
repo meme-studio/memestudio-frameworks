@@ -21,8 +21,10 @@ public class AuthTokenHandler {
 
     @ApiOperation("获取token")
     @PostMapping("_get")
-    public AuthToken get(@RequestBody LoginMessage loginMessage, @RequestHeader(AuthConstants.TOKEN_HEADER) String scope) {
+    public AuthToken get(@RequestBody LoginMessage loginMessage, @RequestHeader(AuthConstants.SCOPE_HEADER) String scope) {
         UserIdService userIdService = userIdServices.get(scope);
+        Optional.ofNullable(userIdService)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_SCOPE));
         String userId = userIdService.get(loginMessage);
         Optional.ofNullable(userId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_LOGIN_MESSAGE));

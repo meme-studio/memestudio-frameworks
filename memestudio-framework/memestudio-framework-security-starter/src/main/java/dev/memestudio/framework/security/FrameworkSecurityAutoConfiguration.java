@@ -37,8 +37,10 @@ public class FrameworkSecurityAutoConfiguration implements WebMvcConfigurer {
 
     @Lazy
     @Bean
-    public AuthUserInterceptor authUserInterceptor(AccessTypeHeaderMapper accessTypeHeaderMapper) {
-        return new AuthUserInterceptor(accessTypeHeaderMapper);
+    public AuthUserInterceptor authUserInterceptor(PermissionProvider permissionProvider,
+                                                   ResourceAccessProvider resourceAccessProvider,
+                                                   AccessTypeHeaderMapper accessTypeHeaderMapper) {
+        return new AuthUserInterceptor(permissionProvider, resourceAccessProvider, accessTypeHeaderMapper);
     }
 
     @Bean

@@ -4,8 +4,6 @@ import dev.memestudio.framework.security.context.*;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -25,13 +23,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthUserInterceptor extends HandlerInterceptorAdapter {
 
-    @Autowired
-    @Lazy
-    private PermissionProvider permissionProvider;
+    private final PermissionProvider permissionProvider;
 
-    @Autowired
-    @Lazy
-    private ResourceAccessProvider resourceAccessProvider;
+    private final ResourceAccessProvider resourceAccessProvider;
 
     private final AccessTypeHeaderMapper accessTypeHeaderMapper;
 

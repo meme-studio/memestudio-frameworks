@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -23,6 +24,7 @@ import static org.springframework.data.redis.serializer.RedisSerializationContex
  * @author meme
  * @since 2020/7/13
  */
+@EnableCaching
 @EnableConfigurationProperties(FrameworkRedisProperties.class)
 @Configuration
 public class FrameworkRedisAutoConfiguration {

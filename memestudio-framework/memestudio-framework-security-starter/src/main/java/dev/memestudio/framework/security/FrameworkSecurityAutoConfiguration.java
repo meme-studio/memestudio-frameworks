@@ -2,6 +2,8 @@ package dev.memestudio.framework.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.memestudio.framework.security.context.AccessTypeHeaderMapper;
+import dev.memestudio.framework.security.context.PermissionProvider;
+import dev.memestudio.framework.security.context.ResourceAccessProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -61,5 +63,16 @@ public class FrameworkSecurityAutoConfiguration implements WebMvcConfigurer {
         return new AccessTypeHeaderMapper();
     }
 
+    @ConditionalOnMissingBean
+    @Bean
+    public PermissionProvider permissionProvider() {
+        return __ -> null;
+    }
+
+    @ConditionalOnMissingBean
+    @Bean
+    public ResourceAccessProvider resourceAccessProvider() {
+        return __ -> null;
+    }
 
 }

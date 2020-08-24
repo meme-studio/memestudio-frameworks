@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "memestudio-framework.client.base-packages",
+      "type": "java.lang.String",
+      "description": "Description for memestudio-framework.client.base-packages."
+    }
+  ]
+}

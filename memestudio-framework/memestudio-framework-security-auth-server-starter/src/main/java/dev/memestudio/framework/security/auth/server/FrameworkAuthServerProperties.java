@@ -12,7 +12,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ConfigurationProperties(prefix = FrameworkAuthServerProperties.PREFIX)
 public class FrameworkAuthServerProperties {
-    public static final String PREFIX = "memestudio-framework.auth-server";
+
+    static final String PREFIX = "memestudio-framework.auth-server";
 
     private long tokenTimeout = 2 * 60 * 60;
 

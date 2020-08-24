@@ -13,7 +13,7 @@ public class BusinessException extends RuntimeException implements ErrorCode {
 
     private static final long serialVersionUID = 2329095321329910557L;
 
-    private final String code;
+    private final int code;
 
     private final String note;
 
@@ -27,7 +27,7 @@ public class BusinessException extends RuntimeException implements ErrorCode {
         this(errorCode.getCode(), String.format(errorCode.getNote(), noteParams), errorParam);
     }
 
-    private BusinessException(String code, String note, Object errorParam) {
+    private BusinessException(int code, String note, Object errorParam) {
         super(String.format("业务异常：%s，异常代码：[%s]", note, code));
         this.code = code;
         this.note = note;

@@ -28,7 +28,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ErrorMessage implements ErrorCode {
 
-    private String code;
+    private int code;
 
     private String note;
 

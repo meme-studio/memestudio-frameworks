@@ -8,7 +8,7 @@ package dev.memestudio.framework.common.error;
  */
 public interface ErrorCode {
 
-    String getCode();
+    int getCode();
 
     String getNote();
 

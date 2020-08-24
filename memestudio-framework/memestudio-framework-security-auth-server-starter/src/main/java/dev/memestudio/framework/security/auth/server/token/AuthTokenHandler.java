@@ -1,6 +1,8 @@
-package dev.memestudio.framework.security.auth.server;
+package dev.memestudio.framework.security.auth.server.token;
 
+import dev.memestudio.framework.security.context.ExpirationMessage;
 import dev.memestudio.framework.security.context.LoginMessage;
+import dev.memestudio.framework.security.context.RefreshMessage;
 import dev.memestudio.framework.security.context.UserIdService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

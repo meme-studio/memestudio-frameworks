@@ -1,4 +1,4 @@
-package dev.memestudio.framework.security.auth.server;
+package dev.memestudio.framework.security.auth.server.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

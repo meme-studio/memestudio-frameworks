@@ -1,4 +1,4 @@
-package dev.memestudio.framework.security.auth.server;
+package dev.memestudio.framework.security.context;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;

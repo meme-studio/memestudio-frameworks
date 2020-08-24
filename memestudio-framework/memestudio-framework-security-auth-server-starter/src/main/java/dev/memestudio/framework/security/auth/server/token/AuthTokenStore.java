@@ -1,4 +1,4 @@
-package dev.memestudio.framework.security.auth.server;
+package dev.memestudio.framework.security.auth.server.token;
 
 import dev.memestudio.framework.redis.RedisOps;
 import dev.memestudio.framework.security.context.AuthConstants;

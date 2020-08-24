@@ -1,5 +1,6 @@
-package dev.memestudio.framework.security.auth.server;
+package dev.memestudio.framework.security.auth.server.token;
 
+import dev.memestudio.framework.security.auth.server.token.AuthTokenStore;
 import dev.memestudio.framework.security.context.AuthConstants;
 import dev.memestudio.framework.security.context.AuthErrorCode;
 import dev.memestudio.framework.security.context.AuthException;

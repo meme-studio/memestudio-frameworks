@@ -2,6 +2,7 @@ package dev.memestudio.framework.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.memestudio.framework.security.context.AccessTypeHeaderMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -14,13 +15,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
-//@EnableConfigurationProperties(FrameworkSecurityProperties.class)
+@RequiredArgsConstructor
 @ConditionalOnWebApplication
 @Configuration
 public class FrameworkSecurityAutoConfiguration implements WebMvcConfigurer {
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     private AuthUserInterceptor authUserInterceptor;

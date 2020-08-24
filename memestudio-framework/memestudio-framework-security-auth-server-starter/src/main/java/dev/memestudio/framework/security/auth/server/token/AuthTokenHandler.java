@@ -21,24 +21,25 @@ public class AuthTokenHandler {
 
     @ApiOperation("获取token")
     @PostMapping("_get")
-    public AuthToken get(@RequestBody LoginMessage loginMessage) {
-        UserIdService userIdService = userIdServices.get(loginMessage.getScope());
+    public AuthToken get(@RequestBody LoginMessage loginMessage, @RequestHeader(AuthConstants.TOKEN_HEADER) String scope) {
+        UserIdService userIdService = userIdServices.get(scope);
         String userId = userIdService.get(loginMessage);
         Optional.ofNullable(userId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_LOGIN_MESSAGE));
-        return authTokenStore.fetchOrGenerate(userId, loginMessage.getScope());
+        return authTokenStore.fetchOrGenerate(userId, scope);
     }
 
     @ApiOperation("获取refreshToken刷新token信息")
     @PostMapping("_refresh")
-    public AuthToken refresh(@RequestBody RefreshMessage refreshMessage) {
-        return authTokenStore.fetchOrGenerateByRefreshToken(refreshMessage.getRefreshToken(), refreshMessage.getScope());
+    public AuthToken refresh(@RequestBody String refreshToken, @RequestHeader(AuthConstants.SCOPE_HEADER) String scope) {
+        return authTokenStore.fetchOrGenerateByRefreshToken(refreshToken, scope);
     }
 
     @ApiOperation("移除token")
     @PostMapping("_del")
-    public void del(@RequestBody ExpirationMessage expirationMessage) {
-        authTokenStore.expireToken(expirationMessage.getToken(), expirationMessage.getScope());
+    public void del(@RequestHeader(AuthConstants.TOKEN_HEADER) String token,
+                    @RequestHeader(AuthConstants.SCOPE_HEADER) String scope) {
+        authTokenStore.expireToken(token, scope);
     }
 
 

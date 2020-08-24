@@ -18,7 +18,4 @@ public class LoginMessage {
     @ApiModelProperty("登陆密码/验证码")
     private String password;
 
-    @ApiModelProperty("指定的客户端")
-    private String scope;
-
 }

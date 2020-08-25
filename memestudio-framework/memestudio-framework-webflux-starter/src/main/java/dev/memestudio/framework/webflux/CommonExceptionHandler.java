@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ServerWebInputException;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -67,7 +68,9 @@ public class CommonExceptionHandler {
      */
     @ExceptionHandler({
             HttpMessageNotReadableException.class,
-            TypeMismatchException.class})
+            TypeMismatchException.class,
+            ServerWebInputException.class
+    })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ErrorMessage handleParamException(Exception ex, ServerHttpRequest request) {
         ErrorCode errorCode = ParamErrorCode.of(ex.hashCode(), ex.getMessage());

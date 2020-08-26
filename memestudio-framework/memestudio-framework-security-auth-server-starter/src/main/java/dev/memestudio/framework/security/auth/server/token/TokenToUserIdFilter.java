@@ -1,9 +1,6 @@
 package dev.memestudio.framework.security.auth.server.token;
 
-import dev.memestudio.framework.security.auth.server.token.AuthTokenStore;
 import dev.memestudio.framework.security.context.AuthConstants;
-import dev.memestudio.framework.security.context.AuthErrorCode;
-import dev.memestudio.framework.security.context.AuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -29,8 +26,7 @@ public class TokenToUserIdFilter implements GlobalFilter {
         String token = headers.getFirst(AuthConstants.TOKEN_HEADER);
         String scope = headers.getFirst(AuthConstants.SCOPE_HEADER);
         ServerHttpRequest request = Optional.ofNullable(token)
-                                            .map(__ -> Optional.ofNullable(authTokenStore.getUserId(token, scope))
-                                                               .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_TOKEN)))
+                                            .map(__ -> authTokenStore.getUserId(token, scope))
                                             .map(userId -> exchange.getRequest()
                                                                    .mutate()
                                                                    .header(AuthConstants.AUTH_USER_HEADER, userId)

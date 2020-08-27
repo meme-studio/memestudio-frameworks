@@ -19,22 +19,18 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 @ConditionalOnClass(XxlJobExecutor.class)
-@EnableConfigurationProperties(XxlJobProperties.class)
+@EnableConfigurationProperties(FrameworkTaskProperties.class)
 public class FrameworkXxlJobAutoConfiguration {
 
-    @ConditionalOnProperty(prefix = XxlJobProperties.PREFIX, name = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = FrameworkTaskProperties.PREFIX, name = "enabled", matchIfMissing = true)
     @ConditionalOnMissingBean
     @Bean(initMethod = "start", destroyMethod = "destroy")
-    public XxlJobExecutor xxlJobExecutor(XxlJobProperties properties){
+    public XxlJobExecutor xxlJobExecutor(FrameworkTaskProperties properties){
         log.info(">>>>>>>>>>> xxl-job config init.");
         XxlJobExecutor xxlJobExecutor = new XxlJobSpringExecutor();
-        xxlJobExecutor.setAppname(properties.getExecutor().getAppname());
-        xxlJobExecutor.setPort(properties.getExecutor().getPort());
-        xxlJobExecutor.setIp(properties.getExecutor().getIp());
-        xxlJobExecutor.setAdminAddresses(String.join(",", properties.getAdmin().getAddresses()));
+        xxlJobExecutor.setAppname(properties.getAppName());
+        xxlJobExecutor.setAdminAddresses(String.join(",", properties.getExecutors()));
         xxlJobExecutor.setAccessToken(properties.getAccessToken());
-        xxlJobExecutor.setLogPath(properties.getExecutor().getLogPath());
-        xxlJobExecutor.setLogRetentionDays(properties.getExecutor().getLogRetentionDays());
         return xxlJobExecutor;
     }
 

@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Map;
+
 /**
  * @author meme
  * @since 2020/8/10
@@ -15,7 +17,10 @@ public class LoginMessage {
     @ApiModelProperty("登陆账号")
     private String account;
 
-    @ApiModelProperty("登陆密码/验证码")
+    @ApiModelProperty("登陆密钥")
     private String password;
+
+    @ApiModelProperty("登陆附加信息")
+    private Map<String, Object> additions;
 
 }

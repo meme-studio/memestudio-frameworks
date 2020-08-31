@@ -23,4 +23,7 @@ public class LoginMessage {
     @ApiModelProperty("登陆附加信息")
     private Map<String, Object> additions;
 
+    @ApiModelProperty("登陆类型，兼容openId等")
+    private String type;
+
 }

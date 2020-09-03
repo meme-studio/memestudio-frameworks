@@ -198,6 +198,7 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
                     <executions>
                         <execution>
                             <goals>
@@ -213,7 +214,9 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
                     <executions>
                         <execution>
                             <phase>compile</phase>
@@ -257,6 +260,11 @@
             <id>rdc-snapshots</id>
             <url>https://packages.aliyun.com/maven/repository/2019199-snapshot-ylHXQz/</url>
         </repository>
+        <repository>
+            <id>spring-libs-snapshot</id>
+            <name>Spring Snapshot Repository</name>
+            <url>https://repo.spring.io/libs-milestone</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -271,6 +279,11 @@
         <pluginRepository>
             <id>rdc-snapshots</id>
             <url>https://packages.aliyun.com/maven/repository/2019199-snapshot-ylHXQz/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-libs-snapshot</id>
+            <name>Spring Snapshot Repository</name>
+            <url>https://repo.spring.io/libs-milestone</url>
         </pluginRepository>
     </pluginRepositories>
 

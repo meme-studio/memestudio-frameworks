@@ -33,8 +33,8 @@ public class AuthTokenHandler {
 
     @ApiOperation("获取refreshToken刷新token信息")
     @PostMapping("_refresh")
-    public AuthToken refresh(@RequestBody String refreshToken, @RequestHeader(AuthConstants.SCOPE_HEADER) String scope) {
-        return authTokenStore.fetchOrGenerateByRefreshToken(refreshToken, scope);
+    public AuthToken refresh(@RequestBody RefreshMessage refreshMessage, @RequestHeader(AuthConstants.SCOPE_HEADER) String scope) {
+        return authTokenStore.fetchOrGenerateByRefreshToken(refreshMessage.getRefreshToken(), scope);
     }
 
     @ApiOperation("移除token")

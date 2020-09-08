@@ -21,7 +21,7 @@ public class AuthTokenHandler {
 
     @ApiOperation("获取token")
     @PostMapping("_get")
-    public AuthToken get(@RequestBody Map<String, Object> loginMessage, @RequestHeader(AuthConstants.SCOPE_HEADER) String scope) {
+    public AuthToken get(@RequestBody Map<String, Object> loginMessage, @RequestHeader(AuthTokenConstants.SCOPE_HEADER) String scope) {
         return Optional.ofNullable(tokenScopes.get(scope))
                        .map(tokenScope -> tokenScope.getUserIdService()
                                                     .get(loginMessage)
@@ -32,7 +32,7 @@ public class AuthTokenHandler {
 
     @ApiOperation("获取refreshToken刷新token信息")
     @PostMapping("_refresh")
-    public AuthToken refresh(@RequestBody RefreshMessage refreshMessage, @RequestHeader(AuthConstants.SCOPE_HEADER) String scope) {
+    public AuthToken refresh(@RequestBody RefreshMessage refreshMessage, @RequestHeader(AuthTokenConstants.SCOPE_HEADER) String scope) {
         return Optional.ofNullable(tokenScopes.get(scope))
                        .map(tokenScope -> authTokenStore.fetchOrGenerateByRefreshToken(refreshMessage.getRefreshToken(), scope, tokenScope.getTokenTimeout(), tokenScope.getRefreshTokenTimeout()))
                        .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_SCOPE));
@@ -40,8 +40,8 @@ public class AuthTokenHandler {
 
     @ApiOperation("移除token")
     @PostMapping("_clear")
-    public void del(@RequestHeader(AuthConstants.TOKEN_HEADER) String token,
-                    @RequestHeader(AuthConstants.SCOPE_HEADER) String scope) {
+    public void del(@RequestHeader(AuthTokenConstants.TOKEN_HEADER) String token,
+                    @RequestHeader(AuthTokenConstants.SCOPE_HEADER) String scope) {
         authTokenStore.expireToken(token, scope);
     }
 

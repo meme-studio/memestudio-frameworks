@@ -20,16 +20,16 @@ public class TokenToUserIdFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         HttpHeaders headers = exchange.getRequest().getHeaders();
-        String token = headers.getFirst(AuthConstants.TOKEN_HEADER);
-        String scope = headers.getFirst(AuthConstants.SCOPE_HEADER);
+        String token = headers.getFirst(AuthTokenConstants.TOKEN_HEADER);
+        String scope = headers.getFirst(AuthTokenConstants.SCOPE_HEADER);
         ServerHttpRequest request = Optional.ofNullable(token)
                                             .map(__ -> authTokenStore.getUserId(token, scope))
                                             .map(userId -> exchange.getRequest()
                                                                    .mutate()
                                                                    .header(AuthConstants.AUTH_USER_HEADER, userId)
                                                                    .headers(httpHeaders -> {
-                                                                       httpHeaders.remove(AuthConstants.TOKEN_HEADER);
-                                                                       httpHeaders.remove(AuthConstants.SCOPE_HEADER);
+                                                                       httpHeaders.remove(AuthTokenConstants.TOKEN_HEADER);
+                                                                       httpHeaders.remove(AuthTokenConstants.SCOPE_HEADER);
                                                                    })
                                                                    .build())
                                             .orElseGet(() -> getNoAuthHeaderRequest(exchange));
@@ -43,8 +43,8 @@ public class TokenToUserIdFilter implements GlobalFilter, Ordered {
                        .mutate()
                        .headers(headers -> {
                            headers.remove(AuthConstants.AUTH_USER_HEADER);
-                           headers.remove(AuthConstants.SCOPE_HEADER);
-                           headers.remove(AuthConstants.TOKEN_HEADER);
+                           headers.remove(AuthTokenConstants.SCOPE_HEADER);
+                           headers.remove(AuthTokenConstants.TOKEN_HEADER);
                        })
                        .build();
     }

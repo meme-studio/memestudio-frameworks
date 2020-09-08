@@ -1,4 +1,4 @@
-package dev.memestudio.framework.security.context;
+package dev.memestudio.framework.security.auth.server.auth;
 
 import java.util.Map;
 import java.util.Optional;

@@ -1,6 +1,5 @@
 package dev.memestudio.framework.security.auth.server.auth;
 
-import dev.memestudio.framework.security.context.UserIdService;
 import lombok.Builder;
 import lombok.Data;
 

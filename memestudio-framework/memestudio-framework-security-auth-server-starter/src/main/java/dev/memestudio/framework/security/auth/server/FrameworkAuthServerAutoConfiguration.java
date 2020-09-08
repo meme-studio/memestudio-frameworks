@@ -1,10 +1,10 @@
 package dev.memestudio.framework.security.auth.server;
 
 import dev.memestudio.framework.redis.RedisOps;
-import dev.memestudio.framework.security.auth.server.token.AuthTokenHandler;
-import dev.memestudio.framework.security.auth.server.token.AuthTokenStore;
-import dev.memestudio.framework.security.auth.server.token.TokenToUserIdFilter;
-import dev.memestudio.framework.security.context.UserIdService;
+import dev.memestudio.framework.security.auth.server.auth.AuthTokenHandler;
+import dev.memestudio.framework.security.auth.server.auth.AuthTokenStore;
+import dev.memestudio.framework.security.auth.server.auth.TokenScope;
+import dev.memestudio.framework.security.auth.server.auth.TokenToUserIdFilter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +12,10 @@ import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
-import java.util.Map;
+import java.util.List;
+
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author meme
@@ -29,13 +32,14 @@ public class FrameworkAuthServerAutoConfiguration implements WebFluxConfigurer {
     }
 
     @Bean
-    public AuthTokenHandler authTokenHandler(AuthTokenStore authTokenStore, Map<String, UserIdService> userIdServices) {
-        return new AuthTokenHandler(authTokenStore, userIdServices);
+    public AuthTokenHandler authTokenHandler(AuthTokenStore authTokenStore, List<TokenScope> tokenScopes) {
+        return new AuthTokenHandler(authTokenStore, tokenScopes.stream()
+                                                               .collect(toMap(TokenScope::getName, identity())));
     }
 
     @Bean
-    public AuthTokenStore authTokenStore(RedisOps redisOps, FrameworkAuthServerProperties properties) {
-        return new AuthTokenStore(redisOps, properties.getTokenTimeout(), properties.getRefreshTokenTimeout());
+    public AuthTokenStore authTokenStore(RedisOps redisOps) {
+        return new AuthTokenStore(redisOps);
     }
 
     @Override

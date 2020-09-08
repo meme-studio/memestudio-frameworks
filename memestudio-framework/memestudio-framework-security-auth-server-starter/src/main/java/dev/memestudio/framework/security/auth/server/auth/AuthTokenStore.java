@@ -1,4 +1,4 @@
-package dev.memestudio.framework.security.auth.server.token;
+package dev.memestudio.framework.security.auth.server.auth;
 
 import dev.memestudio.framework.redis.RedisOps;
 import dev.memestudio.framework.security.context.AuthConstants;
@@ -19,11 +19,8 @@ public class AuthTokenStore {
 
     private final RedisOps redisOps;
 
-    private final long tokenTimeout;
-
-    private final long refreshTokenTimeout;
-
-    private AuthToken generate(String userId, String scope) {
+    private AuthToken generate(String userId, String scope, long tokenTimeout, long refreshTokenTimeout) {
+        expireAuthTokenByUserId(scope, userId);
         String token = UUID.randomUUID().toString();
         String refreshToken = UUID.randomUUID().toString();
         redisOps.setEx(String.join(":", AuthConstants.AUTH_TOKEN_STORE_TOKEN_KEY, scope, token), userId, tokenTimeout);
@@ -33,21 +30,21 @@ public class AuthTokenStore {
         return authToken;
     }
 
-    public AuthToken fetchOrGenerate(String userId, String scope) {
+    public AuthToken fetchOrGenerate(String userId, String scope, long tokenTimeout, long refreshTokenTimeout, boolean singleClientLimited) {
         return redisOps.hGet(AuthConstants.AUTH_TOKEN_STORE_USERS, userId, AuthToken.class)
                        .map(Option::of)
                        .orElseGet(Option::none)
                        .peek(token -> token.setExpiresIn(redisOps.ttl(String.join(":", AuthConstants.AUTH_TOKEN_STORE_TOKEN_KEY, scope, token.getToken()))))
-                       .filter(token -> token.getExpiresIn() > 60)
-                       .getOrElse(() -> generate(userId, scope));
+                       .filter(token -> token.getExpiresIn() > 60 && !singleClientLimited)
+                       .getOrElse(() -> generate(userId, scope, tokenTimeout, refreshTokenTimeout));
     }
 
-    public AuthToken fetchOrGenerateByRefreshToken(String refreshToken, String scope) {
+    public AuthToken fetchOrGenerateByRefreshToken(String refreshToken, String scope, long tokenTimeout, long refreshTokenTimeout) {
         String userId = redisOps.get(String.join(":", AuthConstants.AUTH_TOKEN_STORE_REFRESH_TOKEN_KEY, scope, refreshToken));
         Optional.ofNullable(userId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.ERROR_REFRESH_TOKEN));
         expireAuthTokenByUserId(scope, userId);
-        return generate(userId, scope);
+        return generate(userId, scope, tokenTimeout, refreshTokenTimeout);
     }
 
     public boolean hasToken(String token, String scope) {

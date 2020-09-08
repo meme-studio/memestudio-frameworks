@@ -1,22 +1,19 @@
-package dev.memestudio.framework.security.auth.server.token;
+package dev.memestudio.framework.security.auth.server.auth;
 
 import dev.memestudio.framework.security.context.AuthConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.toMap;
-
 @RequiredArgsConstructor
-public class TokenToUserIdFilter implements GlobalFilter {
+public class TokenToUserIdFilter implements GlobalFilter, Ordered {
 
     private final AuthTokenStore authTokenStore;
 
@@ -30,6 +27,10 @@ public class TokenToUserIdFilter implements GlobalFilter {
                                             .map(userId -> exchange.getRequest()
                                                                    .mutate()
                                                                    .header(AuthConstants.AUTH_USER_HEADER, userId)
+                                                                   .headers(httpHeaders -> {
+                                                                       httpHeaders.remove(AuthConstants.TOKEN_HEADER);
+                                                                       httpHeaders.remove(AuthConstants.SCOPE_HEADER);
+                                                                   })
                                                                    .build())
                                             .orElseGet(() -> getNoAuthHeaderRequest(exchange));
         return chain.filter(exchange.mutate()
@@ -40,12 +41,16 @@ public class TokenToUserIdFilter implements GlobalFilter {
     private ServerHttpRequest getNoAuthHeaderRequest(ServerWebExchange exchange) {
         return exchange.getRequest()
                        .mutate()
-                       .headers(headers -> headers.putAll(exchange.getRequest()
-                                                                  .getHeaders()
-                                                                  .entrySet()
-                                                                  .stream()
-                                                                  .filter(header -> Objects.equals(header.getKey(), AuthConstants.AUTH_USER_HEADER))
-                                                                  .collect(toMap(Map.Entry::getKey, Map.Entry::getValue))))
+                       .headers(headers -> {
+                           headers.remove(AuthConstants.AUTH_USER_HEADER);
+                           headers.remove(AuthConstants.SCOPE_HEADER);
+                           headers.remove(AuthConstants.TOKEN_HEADER);
+                       })
                        .build();
+    }
+
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 }

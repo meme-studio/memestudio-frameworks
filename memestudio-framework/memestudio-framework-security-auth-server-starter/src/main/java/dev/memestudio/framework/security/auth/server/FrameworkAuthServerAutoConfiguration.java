@@ -5,7 +5,6 @@ import dev.memestudio.framework.security.auth.server.auth.AuthTokenHandler;
 import dev.memestudio.framework.security.auth.server.auth.AuthTokenStore;
 import dev.memestudio.framework.security.auth.server.auth.TokenScope;
 import dev.memestudio.framework.security.auth.server.auth.TokenToUserIdFilter;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.CorsRegistry;
@@ -22,7 +21,6 @@ import static java.util.stream.Collectors.toMap;
  * @since 2020/8/15
  */
 @EnableWebFlux
-@EnableConfigurationProperties(FrameworkAuthServerProperties.class)
 @Configuration
 public class FrameworkAuthServerAutoConfiguration implements WebFluxConfigurer {
 

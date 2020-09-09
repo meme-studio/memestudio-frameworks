@@ -12,6 +12,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 
 import java.lang.reflect.Type;
+import java.security.SecureRandom;
+import java.util.Random;
 
 /**
  * KafkaEntityMessageConverter
@@ -21,6 +23,8 @@ import java.lang.reflect.Type;
  */
 @AllArgsConstructor
 public class KafkaEntityMessageConverter extends StringJsonMessageConverter {
+
+    private static final Random spanIdProvider = new SecureRandom();
 
     private final Tracer tracer;
 
@@ -40,6 +44,7 @@ public class KafkaEntityMessageConverter extends StringJsonMessageConverter {
         tracer.joinSpan(TraceContext.newBuilder()
                                     .parentId(parent.getSpanId())
                                     .traceId(parent.getTraceId())
+                                    .spanId(spanIdProvider.nextLong())
                                     .build());
     }
 

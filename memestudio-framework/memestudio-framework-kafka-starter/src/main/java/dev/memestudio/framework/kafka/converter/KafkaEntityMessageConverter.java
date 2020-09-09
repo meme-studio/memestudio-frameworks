@@ -24,7 +24,7 @@ import java.util.Random;
 @AllArgsConstructor
 public class KafkaEntityMessageConverter extends StringJsonMessageConverter {
 
-    private static final Random spanIdProvider = new SecureRandom();
+    private final Random spanIdProvider = new SecureRandom();
 
     private final Tracer tracer;
 

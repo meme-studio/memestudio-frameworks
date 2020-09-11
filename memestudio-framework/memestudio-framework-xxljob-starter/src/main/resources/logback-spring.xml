@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="JOB" class="dev.memestudio.framework.xxljob.XxlJobLoggerAppender" />
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <appender name="JOB" class="dev.memestudio.framework.xxljob.XxlJobLoggerAppender"/>
     <root level="INFO">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
         <appender-ref ref="JOB"/>
     </root>
 </configuration>

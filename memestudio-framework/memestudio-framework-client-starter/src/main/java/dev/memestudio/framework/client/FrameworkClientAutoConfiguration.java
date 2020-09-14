@@ -37,4 +37,9 @@ public class FrameworkClientAutoConfiguration {
         return new HttpMessageConverters(converters.orderedStream().collect(Collectors.toList()));
     }
 
+    @Bean
+    public DateToStringFormatter dateToStringFormatter() {
+        return new DateToStringFormatter();
+    }
+
 }

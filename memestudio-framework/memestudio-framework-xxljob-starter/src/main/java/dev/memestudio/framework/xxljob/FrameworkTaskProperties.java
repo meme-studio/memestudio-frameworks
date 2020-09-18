@@ -26,5 +26,7 @@ class FrameworkTaskProperties {
 
     private List<String> executors;
 
+    private int logRetentionDays = 30;
+
 
 }

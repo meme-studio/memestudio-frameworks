@@ -31,6 +31,7 @@ public class FrameworkXxlJobAutoConfiguration {
         xxlJobExecutor.setAppname(properties.getAppName());
         xxlJobExecutor.setAdminAddresses(String.join(",", properties.getExecutors()));
         xxlJobExecutor.setAccessToken(properties.getAccessToken());
+        xxlJobExecutor.setLogRetentionDays(properties.getLogRetentionDays());
         return xxlJobExecutor;
     }
 

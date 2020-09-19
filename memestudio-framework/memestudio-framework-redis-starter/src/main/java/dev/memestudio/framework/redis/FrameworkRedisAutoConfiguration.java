@@ -1,6 +1,7 @@
 package dev.memestudio.framework.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.alturkovic.lock.redis.configuration.EnableRedisDistributedLock;
 import dev.memestudio.framework.common.support.NumericIdGenerator;
 import dev.memestudio.framework.redis.support.RedisNumericIdGenerator;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ import static org.springframework.data.redis.serializer.RedisSerializationContex
  * @author meme
  * @since 2020/7/13
  */
+@EnableRedisDistributedLock
 @EnableCaching
 @EnableConfigurationProperties(FrameworkRedisProperties.class)
 @Configuration

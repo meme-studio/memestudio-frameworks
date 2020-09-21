@@ -259,21 +259,16 @@
 
     <repositories>
         <repository>
-            <id>aliyun-repo</id>
-            <url>https://maven.aliyun.com/repository/central</url>
+            <id>rdc-snapshots</id>
+            <url>https://packages.aliyun.com/maven/repository/2019199-snapshot-ylHXQz/</url>
         </repository>
         <repository>
             <id>rdc-releases</id>
             <url>https://packages.aliyun.com/maven/repository/2019199-release-TmOtei/</url>
         </repository>
         <repository>
-            <id>rdc-snapshots</id>
-            <url>https://packages.aliyun.com/maven/repository/2019199-snapshot-ylHXQz/</url>
-        </repository>
-        <repository>
-            <id>spring-libs-snapshot</id>
-            <name>Spring Snapshot Repository</name>
-            <url>https://repo.spring.io/libs-milestone</url>
+            <id>aliyun-repo</id>
+            <url>https://maven.aliyun.com/repository/central</url>
         </repository>
         <repository>
             <id>jitpack.io</id>
@@ -293,11 +288,6 @@
         <pluginRepository>
             <id>rdc-snapshots</id>
             <url>https://packages.aliyun.com/maven/repository/2019199-snapshot-ylHXQz/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>spring-libs-snapshot</id>
-            <name>Spring Snapshot Repository</name>
-            <url>https://repo.spring.io/libs-milestone</url>
         </pluginRepository>
     </pluginRepositories>
 

@@ -5,6 +5,7 @@ import com.github.alturkovic.lock.redis.configuration.EnableRedisDistributedLock
 import dev.memestudio.framework.common.support.NumericIdGenerator;
 import dev.memestudio.framework.redis.support.RedisNumericIdGenerator;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
@@ -25,6 +26,7 @@ import static org.springframework.data.redis.serializer.RedisSerializationContex
  * @author meme
  * @since 2020/7/13
  */
+@AutoConfigureBefore(name = "org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration")
 @EnableRedisDistributedLock
 @EnableCaching
 @EnableConfigurationProperties(FrameworkRedisProperties.class)

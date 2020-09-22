@@ -42,8 +42,10 @@ public class FrameworkMvcAutoConfiguration {
     @Bean
     @Order(Integer.MIN_VALUE)
     public ErrorAttributes errorAttributes(ObjectMapper objectMapper,
-                                           @Value("${spring.application.name}") String appName, Tracer tracer) {
-        return new CommonErrorAttributes(objectMapper, appName, tracer);
+                                           @Value("${spring.application.name}") String appName,
+                                           Tracer tracer,
+                                           @Value("${memestudio-framework.common.error.include-error-stacks:true}") Boolean includeErrorStacks) {
+        return new CommonErrorAttributes(objectMapper, appName, tracer, includeErrorStacks);
     }
 
     @Bean
@@ -54,8 +56,10 @@ public class FrameworkMvcAutoConfiguration {
     }
 
     @Bean
-    public CommonExceptionHandler commonExceptionHandler(@Value("${spring.application.name}") String appName, Tracer tracer) {
-        return new CommonExceptionHandler(appName, tracer);
+    public CommonExceptionHandler commonExceptionHandler(@Value("${spring.application.name}") String appName,
+                                                         Tracer tracer,
+                                                         @Value("${memestudio-framework.common.error.include-error-stacks:true}") Boolean includeErrorStacks) {
+        return new CommonExceptionHandler(appName, tracer, includeErrorStacks);
     }
 
     @EnableConfigurationProperties(FrameworkSwaggerProperties.class)

@@ -36,8 +36,10 @@ public class FrameworkWebfluxAutoConfiguration {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public ErrorAttributes errorAttributes(ObjectMapper objectMapper,
-                                           @Value("${spring.application.name}") String appName, Tracer tracer) {
-        return new CommonErrorAttributes(objectMapper, appName, tracer);
+                                           @Value("${spring.application.name}") String appName,
+                                           Tracer tracer,
+                                           @Value("${memestudio-framework.common.error.include-error-stacks:true}") Boolean includeErrorStacks) {
+        return new CommonErrorAttributes(objectMapper, appName, tracer, includeErrorStacks);
     }
 
     @Bean
@@ -54,8 +56,10 @@ public class FrameworkWebfluxAutoConfiguration {
     }
 
     @Bean
-    public CommonExceptionHandler commonExceptionHandler(@Value("${spring.application.name}") String appName, Tracer tracer) {
-        return new CommonExceptionHandler(appName, tracer);
+    public CommonExceptionHandler commonExceptionHandler(@Value("${spring.application.name}") String appName,
+                                                         Tracer tracer,
+                                                         @Value("${memestudio-framework.common.error.include-error-stacks:true}") Boolean includeErrorStacks) {
+        return new CommonExceptionHandler(appName, tracer, includeErrorStacks);
     }
 
 

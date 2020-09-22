@@ -2,6 +2,8 @@ package dev.memestudio.framework.webflux;
 
 import brave.Tracer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.client.ClientException;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import dev.memestudio.framework.common.error.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +21,12 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
+import java.net.ConnectException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import static io.vavr.API.*;
 import static io.vavr.Predicates.*;
@@ -38,6 +43,8 @@ public class CommonErrorAttributes implements ErrorAttributes {
     private final String appName;
 
     private final Tracer tracer;
+
+    private final boolean includeErrorStacks;
 
     @Override
     public Throwable getError(ServerRequest request) {
@@ -72,10 +79,15 @@ public class CommonErrorAttributes implements ErrorAttributes {
                 .from(error.getClass(), MergedAnnotations.SearchStrategy.TYPE_HIERARCHY).get(ResponseStatus.class);
         return Match(error).of(
                 Case($(instanceOf(BusinessException.class)), ex -> handleBusinessException(ex, request)),
+                Case($(instanceOf(HystrixRuntimeException.class)), ex -> handleHystrixRuntimeException(ex, request)),
                 Case($(anyOf(
                         instanceOf(MethodArgumentNotValidException.class),
                         instanceOf(TypeMismatchException.class)
                 )), ex -> handleParamException(ex, request)),
+                Case($(anyOf(
+                        instanceOf(ConnectException.class),
+                        instanceOf(TimeoutException.class)
+                )), ex -> handleNetworkException(ex, request)),
                 Case($(instanceOf(Exception.class)), ex -> handleException(ex, request)),
                 Case($(), () -> handleUnException(determineHttpStatus(error, responseStatusAnnotation), request))
         );
@@ -93,20 +105,20 @@ public class CommonErrorAttributes implements ErrorAttributes {
                            .code(errorCode.getCode())
                            .from(appName)
                            .path(request.exchange().getRequest().getPath().toString())
-                           .trace(tracer.currentSpan().context().toString())
+                           .trace(tracer.currentSpan().context().toString().replace("/", ","))
                            .timestamp(System.currentTimeMillis())
-                           .errorStacks(Arrays.asList(ExceptionUtils.getRootCauseStackTrace(error)))//TODO 暂时实现
+                           .errorStacks(includeErrorStacks ? Arrays.stream(ExceptionUtils.getRootCauseStackTrace(error))
+                                                                   .map(stack -> stack.replaceAll("\t", "  "))
+                                                                   .collect(Collectors.toList()) : null)
                            .build();
     }
 
     /**
      * 其他系统非预期异常
      */
-    private ErrorMessage handleException(Exception ex, ServerRequest request) {
-        int hashCode = ex.hashCode();
-        log.error("发生系统异常, hash值为[{}]", hashCode);
+    private ErrorMessage handleException(Throwable ex, ServerRequest request) {
         log.error(ex.getMessage(), ex);
-        ErrorCode errorCode = SystemErrorCode.of(hashCode, ex.getMessage());
+        ErrorCode errorCode = SystemErrorCode.of(getTrace(), ex.getMessage());
         return buildErrorMessage(request, ex, errorCode);
     }
 
@@ -122,7 +134,7 @@ public class CommonErrorAttributes implements ErrorAttributes {
      * 参数异常
      */
     private ErrorMessage handleParamException(Exception ex, ServerRequest request) {
-        ErrorCode errorCode = ParamErrorCode.of(ex.hashCode(), ex.getMessage());
+        ErrorCode errorCode = ParamErrorCode.of(getTrace(), ex.getMessage());
         return buildErrorMessage(request, ex, errorCode);
     }
 
@@ -132,8 +144,40 @@ public class CommonErrorAttributes implements ErrorAttributes {
     private ErrorMessage handleUnException(HttpStatus status, ServerRequest request) {
         ErrorCode errorCode = Match(status).of(
                 Case($(is(HttpStatus.NOT_FOUND)), () -> HttpStatusUnOkErrorCode.of("请求资源未找到")),
-                Case($(), () -> HttpStatusUnOkErrorCode.of(String.format("访问失败：%d", status.value())))
+                Case($(), () -> HttpStatusUnOkErrorCode.of(String.format("當前服務不可用，請稍后重試：%d", status.value())))
         );
         return buildErrorMessage(request, null, errorCode);
+    }
+
+    /**
+     * 网络异常
+     */
+    private ErrorMessage handleNetworkException(Exception ex, ServerRequest request) {
+        log.warn(ex.getMessage(), ex);
+        ErrorCode errorCode = NetworkErrorCode.of(getTrace(), ex.getMessage());
+        return buildErrorMessage(request, ex, errorCode);
+    }
+
+    /**
+     * 远程调用异常
+     */
+    public ErrorMessage handleHystrixRuntimeException(HystrixRuntimeException ex, ServerRequest request) {
+        log.warn(ex.getMessage(), ex);
+        return Match(ExceptionUtils.getRootCause(ex))
+                .of(
+                        Case($(anyOf(
+                                instanceOf(TimeoutException.class),
+                                instanceOf(ConnectException.class),
+                                instanceOf(ClientException.class)
+                                )),
+                                t -> handleNetworkException(t, request)),
+                        Case($(), t -> handleException(t, request))
+                );
+    }
+
+    private String getTrace() {
+        return tracer.currentSpan()
+                     .context()
+                     .traceIdString();
     }
 }

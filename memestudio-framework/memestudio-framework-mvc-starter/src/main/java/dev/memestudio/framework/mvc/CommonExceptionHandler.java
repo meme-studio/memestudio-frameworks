@@ -1,6 +1,8 @@
 package dev.memestudio.framework.mvc;
 
 import brave.Tracer;
+import com.netflix.client.ClientException;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import dev.memestudio.framework.common.error.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +19,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.ConnectException;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+
+import static io.vavr.API.*;
+import static io.vavr.Predicates.anyOf;
+import static io.vavr.Predicates.instanceOf;
 
 /**
  * @author meme
@@ -34,6 +43,7 @@ public class CommonExceptionHandler {
 
     private final Tracer tracer;
 
+    private final boolean includeErrorStacks;
 
     private ErrorMessage buildErrorMessage(HttpServletRequest request, Throwable error, ErrorCode errorCode, String appName) {
         return ErrorMessage.builder()
@@ -47,9 +57,11 @@ public class CommonExceptionHandler {
                            .code(errorCode.getCode())
                            .from(appName)
                            .path(request.getRequestURI())
-                           .trace(tracer.currentSpan().context().toString())
+                           .trace(tracer.currentSpan().context().toString().replace("/", ","))
                            .timestamp(System.currentTimeMillis())
-                           .errorStacks(Arrays.asList(ExceptionUtils.getRootCauseStackTrace(error)))//TODO 暂时实现
+                           .errorStacks(includeErrorStacks ? Arrays.stream(ExceptionUtils.getRootCauseStackTrace(error))
+                                                                   .map(stack -> stack.replaceAll("\t", "  "))
+                                                                   .collect(Collectors.toList()) : null)
                            .build();
     }
 
@@ -71,10 +83,9 @@ public class CommonExceptionHandler {
             TypeMismatchException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ErrorMessage handleParamException(Exception ex, HttpServletRequest request) {
-        ErrorCode errorCode = ParamErrorCode.of(ex.hashCode(), ex.getMessage());
+        ErrorCode errorCode = ParamErrorCode.of(getTrace(), ex.getMessage());
         return buildErrorMessage(request, ex, errorCode, appName);
     }
-
 
     /**
      * 参数异常
@@ -91,21 +102,56 @@ public class CommonExceptionHandler {
         return buildErrorMessage(request, ex, errorCode, appName);
     }
 
-
     /**
      * 其他系统非预期异常
      */
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     private ErrorMessage handleException(Throwable ex, HttpServletRequest request) {
-        int hashCode = ex.hashCode();
-        log.error("发生系统异常, hash值为[{}]", hashCode);
         log.error(ex.getMessage(), ex);
-        ErrorCode errorCode = SystemErrorCode.of(hashCode, ex.getMessage());
+        ErrorCode errorCode = SystemErrorCode.of(getTrace(), ex.getMessage());
         return buildErrorMessage(request, ex, errorCode, appName);
     }
 
+    /**
+     * 网络异常
+     */
+    @ExceptionHandler({
+            ConnectException.class,
+            ClientException.class,
+            TimeoutException.class
+    })
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    private ErrorMessage handleNetworkException(Exception ex, HttpServletRequest request) {
+        log.warn(ex.getMessage(), ex);
+        ErrorCode errorCode = NetworkErrorCode.of(getTrace(), ex.getMessage());
+        return buildErrorMessage(request, ex, errorCode, appName);
+    }
 
+    /**
+     * 远程调用异常
+     */
+    @ExceptionHandler(HystrixRuntimeException.class)
+    public ErrorMessage handleHystrixRuntimeException(HystrixRuntimeException ex, HttpServletRequest request) {
+        log.warn(ex.getMessage(), ex);
+        ErrorCode errorCode = Match(ExceptionUtils.getRootCause(ex))
+                .of(
+                        Case($(anyOf(
+                                instanceOf(TimeoutException.class),
+                                instanceOf(ConnectException.class),
+                                instanceOf(ClientException.class)
+                                )
+                        ), t -> handleNetworkException(t, request)),
+                        Case($(), t -> handleException(t, request))
+                );
+        return buildErrorMessage(request, ex, errorCode, appName);
+    }
+
+    private String getTrace() {
+        return tracer.currentSpan()
+                     .context()
+                     .traceIdString();
+    }
 
 
 }

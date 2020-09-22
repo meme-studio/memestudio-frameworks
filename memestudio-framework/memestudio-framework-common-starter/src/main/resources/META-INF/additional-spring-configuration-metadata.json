@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "memestudio-framework.common.error.include-error-stacks",
+      "type": "java.lang.Boolean"
+    }
+  ]
+}

@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ParamErrorCode implements ErrorCode {
 
-    private static final String noteTemplate = "請求參數有誤, 錯誤代碼：%s";
+    private static final String noteTemplate = "客戶端請求參數有誤，請聯系開发人員, 錯誤代碼：%s";
 
     private final int code = -100_01_002;
 
@@ -19,8 +19,8 @@ public class ParamErrorCode implements ErrorCode {
 
     private final String detail;
 
-    public static ErrorCode of(int exceptionHash, String detail) {
-        return new ParamErrorCode(String.format(noteTemplate, exceptionHash), detail);
+    public static ErrorCode of(String trace, String detail) {
+        return new ParamErrorCode(String.format(noteTemplate, trace), detail);
     }
 
 

@@ -9,18 +9,18 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public class SystemErrorCode implements ErrorCode {
+public class NetworkErrorCode implements ErrorCode {
 
-    private static final String noteTemplate = "系統发生異常，請聯系開发人員，錯誤代碼：%s";
+    private static final String noteTemplate = "當前服務不可用，請稍后重試，错误代码：%s";
 
-    private final int code = -100_01_001;
+    private final int code = -100_01_003;
 
     private final String note;
 
     private final String detail;
 
     public static ErrorCode of(String trace, String detail) {
-        return new SystemErrorCode(String.format(noteTemplate, trace), detail);
+        return new NetworkErrorCode(String.format(noteTemplate, trace), detail);
     }
 
 

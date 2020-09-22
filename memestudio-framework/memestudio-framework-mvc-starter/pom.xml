@@ -61,6 +61,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.jxls</groupId>
             <artifactId>jxls</artifactId>
             <scope>provided</scope>
@@ -81,7 +91,7 @@
 
         <dependency>
             <groupId>dev.memestudio.framework</groupId>
-            <artifactId>memestudio-framework-common</artifactId>
+            <artifactId>memestudio-framework-common-starter</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

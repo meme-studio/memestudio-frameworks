@@ -26,7 +26,7 @@ import static org.springframework.data.redis.serializer.RedisSerializationContex
  * @author meme
  * @since 2020/7/13
  */
-@AutoConfigureBefore(name = "org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration")
+@AutoConfigureBefore(name = {"org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration", "org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration"})
 @EnableRedisDistributedLock
 @EnableCaching
 @EnableConfigurationProperties(FrameworkRedisProperties.class)

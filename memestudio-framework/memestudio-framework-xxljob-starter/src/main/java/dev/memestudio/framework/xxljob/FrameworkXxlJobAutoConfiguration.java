@@ -1,5 +1,6 @@
 package dev.memestudio.framework.xxljob;
 
+import brave.Tracer;
 import com.xxl.job.core.executor.XxlJobExecutor;
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,11 @@ public class FrameworkXxlJobAutoConfiguration {
         xxlJobExecutor.setAccessToken(properties.getAccessToken());
         xxlJobExecutor.setLogRetentionDays(properties.getLogRetentionDays());
         return xxlJobExecutor;
+    }
+
+    @Bean
+    public JobTracer jobTracer(Tracer tracer) {
+        return new JobTracer(tracer);
     }
 
 

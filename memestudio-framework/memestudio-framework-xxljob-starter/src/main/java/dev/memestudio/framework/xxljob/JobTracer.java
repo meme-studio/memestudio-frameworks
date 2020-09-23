@@ -2,8 +2,10 @@ package dev.memestudio.framework.xxljob;
 
 import brave.Tracer;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.*;
 
+@Slf4j
 @AllArgsConstructor
 @Aspect
 public class JobTracer {
@@ -13,19 +15,16 @@ public class JobTracer {
     @Pointcut("@annotation(com.xxl.job.core.handler.annotation.XxlJob)")
     public void jobPointCut() {}
 
-    @Before("@annotation(com.xxl.job.core.handler.annotation.XxlJob)")
+    @Before("jobPointCut()")
     public void createTrace() {
+        log.info("createTrace");
         tracer.newTrace();
     }
 
-    @AfterReturning(pointcut = "jobPointCut()")
-    public void removeTraceAfterReturning() {
+    @After("jobPointCut()")
+    public void removeTrace() {
+        log.info("removeTrace");
         tracer.currentSpan().finish();
-    }
-
-    @AfterThrowing(pointcut = "jobPointCut()")
-    public void removeTraceAfterThrowing() {
-        removeTraceAfterReturning();
     }
 
 }

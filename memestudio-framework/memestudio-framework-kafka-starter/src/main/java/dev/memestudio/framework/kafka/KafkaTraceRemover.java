@@ -2,8 +2,7 @@ package dev.memestudio.framework.kafka;
 
 import brave.Tracer;
 import lombok.AllArgsConstructor;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
@@ -18,14 +17,9 @@ public class KafkaTraceRemover {
             "|| @annotation(org.springframework.kafka.annotation.KafkaHandler)")
     public void kafkaConsumerPointCut() {}
 
-    @AfterReturning(pointcut = "kafkaConsumerPointCut()")
-    public void removeTraceAfterReturning() {
+    @After("kafkaConsumerPointCut()")
+    public void removeTrace() {
         tracer.currentSpan().finish();
-    }
-
-    @AfterThrowing(pointcut = "kafkaConsumerPointCut()")
-    public void removeTraceAfterThrowing() {
-        removeTraceAfterReturning();
     }
 
 }

@@ -132,6 +132,7 @@ public class CommonExceptionHandler {
      * 远程调用异常
      */
     @ExceptionHandler(HystrixRuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorMessage handleHystrixRuntimeException(HystrixRuntimeException ex, HttpServletRequest request) {
         log.warn(ex.getMessage(), ex);
         ErrorCode errorCode = Match(ExceptionUtils.getRootCause(ex))

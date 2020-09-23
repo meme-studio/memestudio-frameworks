@@ -16,6 +16,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -80,12 +81,13 @@ public class CommonErrorAttributes implements ErrorAttributes, HandlerExceptionR
         Throwable error = getError(webRequest);
         ErrorCode errorCode =
                 Match(error).of(
-                        Case($(instanceOf(Exception.class)), this::handleException),
                         Case($(instanceOf(HystrixRuntimeException.class)), this::handleHystrixRuntimeException),
                         Case($(anyOf(
                                 instanceOf(ConnectException.class),
                                 instanceOf(TimeoutException.class)
-                        )), this::handleNetworkException),
+                                )), this::handleNetworkException),
+                        Case($(instanceOf(ResponseStatusException.class)),handleUnException(getAttribute(webRequest, RequestDispatcher.ERROR_STATUS_CODE))),
+                        Case($(instanceOf(Exception.class)), this::handleException),
                         Case($(), () -> handleUnException(getAttribute(webRequest, RequestDispatcher.ERROR_STATUS_CODE)))
                 );
         TraceContext context = tracer.currentSpan()

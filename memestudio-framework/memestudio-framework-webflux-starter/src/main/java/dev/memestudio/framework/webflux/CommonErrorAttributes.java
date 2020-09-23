@@ -88,6 +88,7 @@ public class CommonErrorAttributes implements ErrorAttributes {
                         instanceOf(ConnectException.class),
                         instanceOf(TimeoutException.class)
                 )), ex -> handleNetworkException(ex, request)),
+                Case($(instanceOf(ResponseStatusException.class)), ex -> handleUnException(determineHttpStatus(error, responseStatusAnnotation), request)),
                 Case($(instanceOf(Exception.class)), ex -> handleException(ex, request)),
                 Case($(), () -> handleUnException(determineHttpStatus(error, responseStatusAnnotation), request))
         );

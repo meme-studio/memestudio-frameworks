@@ -1,6 +1,7 @@
 package dev.memestudio.framework.xxljob;
 
 import brave.Tracer;
+import com.xxl.job.core.log.XxlJobLogger;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.*;
@@ -18,6 +19,7 @@ public class JobTracer {
     @Before("jobPointCut()")
     public void createTrace() {
         tracer.startScopedSpan("xxl-job-task");
+        XxlJobLogger.log("trace: {}", tracer.currentSpan().context().toString().replace("/", ","));
     }
 
     @After("jobPointCut()")

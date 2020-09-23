@@ -1,6 +1,5 @@
 package dev.memestudio.framework.kafka;
 
-import brave.Span;
 import brave.Tracer;
 import brave.propagation.TraceContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,9 +8,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 
-import java.security.SecureRandom;
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * KafkaSender
@@ -28,8 +25,6 @@ public class KafkaSender {
     private final ObjectMapper mapper;
 
     private final Tracer tracer;
-
-    private final Random random = new SecureRandom();
 
     public <T> void send(String topic, String key, T value) {
         String data = generateDataMessage(value);
@@ -56,14 +51,8 @@ public class KafkaSender {
     @SneakyThrows
     private String generateDataMessage(Object value) {
         TraceContext span = Optional.ofNullable(tracer.currentSpan())
-                                    .map(Span::context)
-                                    .orElseGet(() -> {
-                                        long id = random.nextLong();
-                                        return TraceContext.newBuilder()
-                                                           .traceId(id)
-                                                           .spanId(id)
-                                                           .build();
-                                    });
+                                    .orElseGet(tracer::newTrace)
+                                    .context();
         return mapper.writeValueAsString(KafkaEntity.of(KafkaEntity.CurrentSpan.of(span.spanId(), span.traceId()), mapper.writeValueAsString(value)));
     }
 

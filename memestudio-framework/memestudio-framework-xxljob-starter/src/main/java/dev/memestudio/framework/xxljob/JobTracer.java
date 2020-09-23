@@ -17,13 +17,11 @@ public class JobTracer {
 
     @Before("jobPointCut()")
     public void createTrace() {
-        log.info("createTrace");
-        tracer.newTrace();
+        tracer.startScopedSpan("xxl-job-task");
     }
 
     @After("jobPointCut()")
     public void removeTrace() {
-        log.info("removeTrace");
         tracer.currentSpan().finish();
     }
 

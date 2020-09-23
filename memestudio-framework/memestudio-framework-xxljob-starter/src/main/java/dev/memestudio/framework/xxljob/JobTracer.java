@@ -18,7 +18,7 @@ public class JobTracer {
 
     @Before("jobPointCut()")
     public void createTrace() {
-        tracer.startScopedSpan("xxl-job-task");
+        tracer.withSpanInScope(tracer.newTrace().start());
         XxlJobLogger.log("trace: {}", tracer.currentSpan().context().toString().replace("/", ","));
     }
 

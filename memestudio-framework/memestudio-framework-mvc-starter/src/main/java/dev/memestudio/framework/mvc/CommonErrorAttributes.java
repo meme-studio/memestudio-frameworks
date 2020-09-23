@@ -85,8 +85,8 @@ public class CommonErrorAttributes implements ErrorAttributes, HandlerExceptionR
                         Case($(anyOf(
                                 instanceOf(ConnectException.class),
                                 instanceOf(TimeoutException.class)
-                                )), this::handleNetworkException),
-                        Case($(instanceOf(ResponseStatusException.class)),handleUnException(getAttribute(webRequest, RequestDispatcher.ERROR_STATUS_CODE))),
+                        )), this::handleNetworkException),
+                        Case($(instanceOf(ResponseStatusException.class)), this::handleResponseStatusException),
                         Case($(instanceOf(Exception.class)), this::handleException),
                         Case($(), () -> handleUnException(getAttribute(webRequest, RequestDispatcher.ERROR_STATUS_CODE)))
                 );
@@ -126,6 +126,18 @@ public class CommonErrorAttributes implements ErrorAttributes, HandlerExceptionR
 
 
     /**
+     * 非异常情况
+     */
+    private ErrorCode handleResponseStatusException(ResponseStatusException ex) {
+        return Match(ex.getStatus()).of(
+                Case($(is(HttpStatus.NOT_FOUND)), () -> HttpStatusUnOkErrorCode.of("请求资源未找到", ex.getMessage())),
+                Case($(is(HttpStatus.SERVICE_UNAVAILABLE)), () -> HttpStatusUnOkErrorCode.of("當前服務不可用，請稍后重試", null)),
+                Case($(), () -> HttpStatusUnOkErrorCode.of(String.format("當前服務不可用，請稍后重試：%d", ex.getStatus().value()), ex.getMessage()))
+        );
+    }
+
+
+    /**
      * 远程调用异常
      */
     public ErrorCode handleHystrixRuntimeException(HystrixRuntimeException ex) {
@@ -147,9 +159,9 @@ public class CommonErrorAttributes implements ErrorAttributes, HandlerExceptionR
      */
     private ErrorCode handleUnException(int status) {
         return Match(status).of(
-                Case($(is(HttpStatus.NOT_FOUND.value())), () -> HttpStatusUnOkErrorCode.of("請求資源未找到")),
-                Case($(is(HttpStatus.SERVICE_UNAVAILABLE.value())), () -> HttpStatusUnOkErrorCode.of("當前服務不可用，請稍后重試")),
-                Case($(), () -> HttpStatusUnOkErrorCode.of(String.format("當前服務不可用，請稍后重試：%d", status)))
+                Case($(is(HttpStatus.NOT_FOUND.value())), () -> HttpStatusUnOkErrorCode.of("請求資源未找到", null)),
+                Case($(is(HttpStatus.SERVICE_UNAVAILABLE.value())), () -> HttpStatusUnOkErrorCode.of("當前服務不可用，請稍后重試", null)),
+                Case($(), () -> HttpStatusUnOkErrorCode.of(String.format("當前服務不可用，請稍后重試：%d", status), null))
         );
     }
 

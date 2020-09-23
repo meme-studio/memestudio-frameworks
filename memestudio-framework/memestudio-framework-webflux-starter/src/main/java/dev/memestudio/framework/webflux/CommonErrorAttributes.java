@@ -88,7 +88,7 @@ public class CommonErrorAttributes implements ErrorAttributes {
                         instanceOf(ConnectException.class),
                         instanceOf(TimeoutException.class)
                 )), ex -> handleNetworkException(ex, request)),
-                Case($(instanceOf(ResponseStatusException.class)), ex -> handleUnException(determineHttpStatus(error, responseStatusAnnotation), request)),
+                Case($(instanceOf(ResponseStatusException.class)), ex -> handleResponseStatusException(ex, request)),
                 Case($(instanceOf(Exception.class)), ex -> handleException(ex, request)),
                 Case($(), () -> handleUnException(determineHttpStatus(error, responseStatusAnnotation), request))
         );
@@ -142,10 +142,23 @@ public class CommonErrorAttributes implements ErrorAttributes {
     /**
      * 非异常情况
      */
+    private ErrorMessage handleResponseStatusException(ResponseStatusException ex, ServerRequest request) {
+        ErrorCode errorCode = Match(ex.getStatus()).of(
+                Case($(is(HttpStatus.NOT_FOUND)), () -> HttpStatusUnOkErrorCode.of("请求资源未找到", ex.getMessage())),
+                Case($(is(HttpStatus.SERVICE_UNAVAILABLE)), () -> HttpStatusUnOkErrorCode.of("當前服務不可用，請稍后重試", null)),
+                Case($(), () -> HttpStatusUnOkErrorCode.of(String.format("當前服務不可用，請稍后重試：%d", ex.getStatus().value()), ex.getMessage()))
+        );
+        return buildErrorMessage(request, ex, errorCode);
+    }
+
+    /**
+     * 非异常情况
+     */
     private ErrorMessage handleUnException(HttpStatus status, ServerRequest request) {
         ErrorCode errorCode = Match(status).of(
-                Case($(is(HttpStatus.NOT_FOUND)), () -> HttpStatusUnOkErrorCode.of("请求资源未找到")),
-                Case($(), () -> HttpStatusUnOkErrorCode.of(String.format("當前服務不可用，請稍后重試：%d", status.value())))
+                Case($(is(HttpStatus.NOT_FOUND)), () -> HttpStatusUnOkErrorCode.of("请求资源未找到", null)),
+                Case($(is(HttpStatus.SERVICE_UNAVAILABLE)), () -> HttpStatusUnOkErrorCode.of("當前服務不可用，請稍后重試", null)),
+                Case($(), () -> HttpStatusUnOkErrorCode.of(String.format("當前服務不可用，請稍后重試：%d", status.value()), null))
         );
         return buildErrorMessage(request, null, errorCode);
     }

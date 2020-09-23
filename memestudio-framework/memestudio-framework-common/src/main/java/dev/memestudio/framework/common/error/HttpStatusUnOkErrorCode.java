@@ -17,8 +17,8 @@ public class HttpStatusUnOkErrorCode implements ErrorCode {
 
     private final String detail;
 
-    public static ErrorCode of(String desc) {
-        return new HttpStatusUnOkErrorCode(desc, desc);
+    public static ErrorCode of(String desc, String detail) {
+        return new HttpStatusUnOkErrorCode(desc, detail);
     }
 
 

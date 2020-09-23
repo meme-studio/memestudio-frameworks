@@ -143,6 +143,7 @@ public class CommonErrorAttributes implements ErrorAttributes {
      * 非异常情况
      */
     private ErrorMessage handleResponseStatusException(ResponseStatusException ex, ServerRequest request) {
+        log.error(ex.getMessage(), ex);
         ErrorCode errorCode = Match(ex.getStatus()).of(
                 Case($(is(HttpStatus.NOT_FOUND)), () -> HttpStatusUnOkErrorCode.of("请求资源未找到", ex.getMessage())),
                 Case($(is(HttpStatus.SERVICE_UNAVAILABLE)), () -> HttpStatusUnOkErrorCode.of("當前服務不可用，請稍后重試", null)),

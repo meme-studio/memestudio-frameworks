@@ -223,6 +223,14 @@ public class RedisOps {
         return opsForSet().isMember(toScopeKey(key), valueToString(member));
     }
 
+    public Set<String> sMembers(String key) {
+        return opsForSet().members(toScopeKey(key));
+    }
+
+    public <T> Set<T> sMembers(String key, Class<T> type) {
+        return toType(sMembers(key), type);
+    }
+
     //~ Sorted Sets
 
     public <T> Boolean zAdd(String key, T value, double score) {
@@ -329,9 +337,11 @@ public class RedisOps {
 
     @SuppressWarnings("unchecked")
     private <T, C extends Collection<T>> C toType(Collection<String> values, Class<T> type) {
-        return (C) values.stream()
-                         .map(castType(type))
-                         .collect(toCollection(unchecked(values.getClass()::newInstance)));
+        return (C) Optional.ofNullable(values)
+                           .map(__ -> values.stream()
+                                            .map(castType(type))
+                                            .collect(toCollection(unchecked(values.getClass()::newInstance))))
+                           .orElse(null);
     }
 
     private <T> String valueToString(T value) {

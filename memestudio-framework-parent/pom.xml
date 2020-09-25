@@ -260,33 +260,47 @@
     <repositories>
         <repository>
             <id>rdc-snapshots</id>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
             <url>https://packages.aliyun.com/maven/repository/2019199-snapshot-ylHXQz/</url>
         </repository>
         <repository>
             <id>rdc-releases</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
             <url>https://packages.aliyun.com/maven/repository/2019199-release-TmOtei/</url>
         </repository>
         <repository>
             <id>aliyun-repo</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
             <url>https://maven.aliyun.com/repository/central</url>
         </repository>
         <repository>
             <id>jitpack.io</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
-            <id>aliyun-repo</id>
-            <url>https://maven.aliyun.com/repository/central</url>
-        </pluginRepository>
-        <pluginRepository>
             <id>rdc-releases</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
             <url>https://packages.aliyun.com/maven/repository/2019199-release-TmOtei/</url>
         </pluginRepository>
         <pluginRepository>
             <id>rdc-snapshots</id>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
             <url>https://packages.aliyun.com/maven/repository/2019199-snapshot-ylHXQz/</url>
         </pluginRepository>
     </pluginRepositories>

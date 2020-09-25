@@ -290,30 +290,30 @@
 
     <pluginRepositories>
         <pluginRepository>
-            <id>rdc-releases</id>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <url>https://packages.aliyun.com/maven/repository/2019199-release-TmOtei/</url>
-        </pluginRepository>
-        <pluginRepository>
             <id>rdc-snapshots</id>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
             <url>https://packages.aliyun.com/maven/repository/2019199-snapshot-ylHXQz/</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>rdc-releases</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <url>https://packages.aliyun.com/maven/repository/2019199-release-TmOtei/</url>
+        </pluginRepository>
     </pluginRepositories>
 
     <distributionManagement>
-        <repository>
-            <id>rdc-releases</id>
-            <url>https://packages.aliyun.com/maven/repository/2019199-release-TmOtei/</url>
-        </repository>
         <snapshotRepository>
             <id>rdc-snapshots</id>
             <url>https://packages.aliyun.com/maven/repository/2019199-snapshot-ylHXQz/</url>
         </snapshotRepository>
+        <repository>
+            <id>rdc-releases</id>
+            <url>https://packages.aliyun.com/maven/repository/2019199-release-TmOtei/</url>
+        </repository>
     </distributionManagement>
 
 </project>

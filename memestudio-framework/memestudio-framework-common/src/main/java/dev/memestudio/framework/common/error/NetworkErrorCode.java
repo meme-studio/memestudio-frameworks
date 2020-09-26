@@ -13,7 +13,7 @@ public class NetworkErrorCode implements ErrorCode {
 
     private static final String noteTemplate = "當前服務不可用，請稍后重試，错误代码：%s";
 
-    private final int code = -100_01_003;
+    private final int code = -100_00_003;
 
     private final String note;
 

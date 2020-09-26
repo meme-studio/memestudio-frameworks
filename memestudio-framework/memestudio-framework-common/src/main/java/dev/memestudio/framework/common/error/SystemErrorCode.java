@@ -13,7 +13,7 @@ public class SystemErrorCode implements ErrorCode {
 
     private static final String noteTemplate = "系統发生異常，請聯系開发人員，錯誤代碼：%s";
 
-    private final int code = -100_01_001;
+    private final int code = -100_00_001;
 
     private final String note;
 

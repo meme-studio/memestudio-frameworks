@@ -14,7 +14,7 @@ public class JpaScrollingResponses {
 
     public <O> ScrollingResponse<O> from(QueryResults<O> results) {
         return ScrollingResponse.<O>builder()
-                .next(results.getTotal() > results.getLimit() * (results.getOffset() + 1))
+                .next(results.getTotal() > results.getLimit() + results.getOffset())
                 .nextOffset(String.valueOf(results.getOffset() + results.getLimit()))
                 .result(results.getResults())
                 .build();

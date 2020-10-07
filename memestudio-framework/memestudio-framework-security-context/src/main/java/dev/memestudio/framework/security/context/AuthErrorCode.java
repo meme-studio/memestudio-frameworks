@@ -19,7 +19,7 @@ public enum AuthErrorCode implements ErrorCode {
     INVALID_LOGIN_MESSAGE(-100_01_004, "登錄信息有誤，請重新登錄"),
     ERROR_REFRESH_TOKEN(-100_01_005, "登錄刷新碼錯誤"),
     NO_RESOURCE_ACCESS(-100_01_006, "您沒有當前商戶或門店的操作權限"),
-    INVALID_SCOPE(-100_01_008, "scope信息有誤"),
+    INVALID_SCOPE(-100_01_008, "scope信息有誤，請聯系開发人員"),
     ;
 
     private final int code;

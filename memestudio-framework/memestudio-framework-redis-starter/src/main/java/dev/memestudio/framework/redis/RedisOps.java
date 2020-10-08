@@ -339,6 +339,7 @@ public class RedisOps {
     private <T, C extends Collection<T>> C toType(Collection<String> values, Class<T> type) {
         return (C) Optional.ofNullable(values)
                            .map(__ -> values.stream()
+                                            .filter(Objects::nonNull)
                                             .map(castType(type))
                                             .collect(toCollection(unchecked(values.getClass()::newInstance))))
                            .orElse(null);

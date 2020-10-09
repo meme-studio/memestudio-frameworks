@@ -5,11 +5,16 @@ import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.*;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import static io.vavr.API.unchecked;
+import static io.vavr.API.*;
+import static io.vavr.Predicates.instanceOf;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -335,15 +340,18 @@ public class RedisOps {
                        .map(castType(type));
     }
 
-    @SuppressWarnings("unchecked")
     private <T, C extends Collection<T>> C toType(Collection<String> values, Class<T> type) {
         return (C) Optional.ofNullable(values)
-                           .map(__ -> values.stream()
-                                            .filter(Objects::nonNull)
-                                            .map(castType(type))
-                                            .collect(toCollection(unchecked(values.getClass()::newInstance))))
-                           .orElse(null);
+                       .map(__ -> values.stream()
+                                        .filter(Objects::nonNull)
+                                        .map(castType(type))
+                                        .collect(toCollection(unchecked(() ->
+                                                Match((Object) values).of(
+                                                        Case($(instanceOf(Set.class)), (Supplier<HashSet<T>>) HashSet::new),
+                                                        Case($(instanceOf(List.class)), (Supplier<ArrayList<T>>) ArrayList::new))))))
+                       .orElse(null);
     }
+
 
     private <T> String valueToString(T value) {
         return Option.of(value)

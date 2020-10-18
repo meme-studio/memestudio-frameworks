@@ -208,8 +208,8 @@ public class RedisOps {
     //~ Sets
 
     @SafeVarargs
-    public final <T> Long sAdd(String key, T... member) {
-        return opsForSet().add(toScopeKey(key), valuesToStrings(member));
+    public final <T> Long sAdd(String key, T... members) {
+        return opsForSet().add(toScopeKey(key), valuesToStrings(members));
     }
 
     public Long sCard(String key) {
@@ -234,6 +234,11 @@ public class RedisOps {
 
     public <T> Set<T> sMembers(String key, Class<T> type) {
         return toType(sMembers(key), type);
+    }
+
+    @SafeVarargs
+    public final <T> Long sRem(String key, T... members) {
+        return opsForSet().remove(key, (Object[]) valuesToStrings(members));
     }
 
     //~ Sorted Sets

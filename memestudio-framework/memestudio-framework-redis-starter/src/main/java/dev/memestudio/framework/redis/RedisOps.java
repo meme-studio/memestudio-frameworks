@@ -62,6 +62,10 @@ public class RedisOps {
         opsForValue().set(toScopeKey(key), valueToString(value));
     }
 
+    public <T> void setExNx(String key, T value, long timeout) {
+        opsForValue().setIfAbsent(toScopeKey(key), valueToString(value), timeout, TimeUnit.SECONDS);
+    }
+
     public <T> void setRange(String key, T value, long offset) {
         opsForValue().set(toScopeKey(key), valueToString(value), offset);
     }

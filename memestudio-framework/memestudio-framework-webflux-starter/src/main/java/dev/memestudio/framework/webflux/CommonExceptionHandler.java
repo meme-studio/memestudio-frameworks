@@ -71,6 +71,7 @@ public class CommonExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleBusinessException(BusinessException ex, ServerHttpRequest request) {
+        log.warn(ex.getMessage(), ex);
         return buildErrorMessage(request, ex, ex, appName);
     }
 
@@ -84,6 +85,7 @@ public class CommonExceptionHandler {
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ErrorMessage handleParamException(Exception ex, ServerHttpRequest request) {
+        log.warn(ex.getMessage(), ex);
         ErrorCode errorCode = ParamErrorCode.of(getTrace(), ex.getMessage());
         return buildErrorMessage(request, ex, errorCode, appName);
     }
@@ -94,6 +96,7 @@ public class CommonExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ErrorCode handleNotValidException(MethodArgumentNotValidException ex, ServerHttpRequest request) {
+        log.warn(ex.getMessage(), ex);
         String note = Optional.of(ex)
                               .map(MethodArgumentNotValidException::getBindingResult)
                               .map(BindingResult::getFieldError)

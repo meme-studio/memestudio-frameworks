@@ -24,6 +24,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -148,6 +149,7 @@ public class CommonErrorAttributes implements ErrorAttributes, HandlerExceptionR
                         Case($(anyOf(
                                 instanceOf(TimeoutException.class),
                                 instanceOf(ConnectException.class),
+                                instanceOf(SocketTimeoutException.class),
                                 instanceOf(ClientException.class)
                                 )),
                                 this::handleNetworkException),

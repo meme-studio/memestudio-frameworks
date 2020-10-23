@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
@@ -122,7 +123,8 @@ public class CommonExceptionHandler {
     @ExceptionHandler({
             ConnectException.class,
             ClientException.class,
-            TimeoutException.class
+            TimeoutException.class,
+            SocketTimeoutException.class
     })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     private ErrorMessage handleNetworkException(Exception ex, HttpServletRequest request) {
@@ -143,6 +145,7 @@ public class CommonExceptionHandler {
                         Case($(anyOf(
                                 instanceOf(TimeoutException.class),
                                 instanceOf(ConnectException.class),
+                                instanceOf(SocketTimeoutException.class),
                                 instanceOf(ClientException.class)
                                 )
                         ), t -> handleNetworkException(t, request)),

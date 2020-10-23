@@ -22,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
@@ -183,6 +184,7 @@ public class CommonErrorAttributes implements ErrorAttributes {
                         Case($(anyOf(
                                 instanceOf(TimeoutException.class),
                                 instanceOf(ConnectException.class),
+                                instanceOf(SocketTimeoutException.class),
                                 instanceOf(ClientException.class)
                                 )),
                                 t -> handleNetworkException(t, request)),

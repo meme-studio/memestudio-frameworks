@@ -29,7 +29,7 @@
         <spring-cloud-alibaba.version>2.2.1.RELEASE</spring-cloud-alibaba.version>
         <spring-cloud.version>Hoxton.SR7</spring-cloud.version>
 
-        <logbook.version>2.1.0</logbook.version>
+        <logbook.version>2.3.0</logbook.version>
         <guava.version>20.0</guava.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>

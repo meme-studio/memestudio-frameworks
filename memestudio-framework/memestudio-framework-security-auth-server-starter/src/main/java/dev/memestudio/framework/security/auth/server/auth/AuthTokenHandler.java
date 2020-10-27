@@ -1,11 +1,13 @@
 package dev.memestudio.framework.security.auth.server.auth;
 
-import dev.memestudio.framework.security.context.*;
+import dev.memestudio.framework.security.context.AuthErrorCode;
+import dev.memestudio.framework.security.context.AuthException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,10 +23,13 @@ public class AuthTokenHandler {
 
     @ApiOperation("获取token")
     @PostMapping("_get")
-    public AuthToken get(@RequestBody Map<String, Object> loginMessage, @RequestHeader(AuthTokenConstants.SCOPE_HEADER) String scope) {
+    public AuthToken get(@RequestBody Map<String, Object> loginBody, @RequestHeader(AuthTokenConstants.SCOPE_HEADER) String scope, @RequestHeader Map<String, String> loginHeaders) {
+        Map<String, Object> loginMessages = new HashMap<>();
+        loginMessages.putAll(loginHeaders);
+        loginMessages.putAll(loginBody);
         return Optional.ofNullable(tokenScopes.get(scope))
                        .map(tokenScope -> tokenScope.getUserIdService()
-                                                    .get(loginMessage)
+                                                    .get(loginMessages)
                                                     .map(userId -> authTokenStore.fetchOrGenerate(userId, scope, tokenScope.getTokenTimeout(), tokenScope.getRefreshTokenTimeout(), tokenScope.isSingleClientLimited()))
                                                     .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_LOGIN_MESSAGE)))
                        .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_SCOPE));

@@ -7,6 +7,8 @@ import org.apache.commons.collections4.MapUtils;
 
 import java.util.*;
 
+import static java.util.function.Predicate.isEqual;
+
 /**
  * @author meme
  * @since 2020/8/7
@@ -37,6 +39,7 @@ public class CurrentAuthUser {
 
         this.currentResourceAccess = currentResourceAccess;
     }
+
     public String currentResourceAccess(AccessType type) {
         return currentResourceAccess.get(type);
     }
@@ -46,8 +49,10 @@ public class CurrentAuthUser {
         return Objects.isNull(resourceIds) || resourceIds.contains(resourceId);
     }
 
-    public boolean hasPermission(String permission) {
-        return Objects.isNull(permissions) || permissions.contains(permission);
+    public boolean hasPermission(String[] checkingPermissions) {
+        return Objects.isNull(permissions) || Arrays.stream(checkingPermissions)
+                                                    .anyMatch(checkingPermission -> permissions.stream()
+                                                                                               .anyMatch(isEqual(checkingPermission)));
     }
 
 }

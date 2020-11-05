@@ -27,11 +27,11 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
         return true;
     }
 
-    private void check(String permission) {
+    private void check(String[] permissions) {
         CurrentAuthUser authUser =
                 Optional.ofNullable(AuthUserContext.current())
                         .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_LOGIN_MESSAGE));
-        if (!authUser.hasPermission(permission)) {
+        if (!authUser.hasPermission(permissions)) {
             throw new AuthException(AuthErrorCode.NO_PERMISSION);
         }
     }

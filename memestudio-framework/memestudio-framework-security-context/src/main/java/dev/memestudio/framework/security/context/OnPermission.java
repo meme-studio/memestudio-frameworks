@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface OnPermission {
 
-    String value();
+    String[] value();
 
     String description() default "";
 

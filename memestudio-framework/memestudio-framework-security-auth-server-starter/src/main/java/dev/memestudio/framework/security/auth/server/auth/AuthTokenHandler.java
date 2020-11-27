@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@CrossOrigin
 @Api(tags = "token管理")
 @RequiredArgsConstructor
 @RestController

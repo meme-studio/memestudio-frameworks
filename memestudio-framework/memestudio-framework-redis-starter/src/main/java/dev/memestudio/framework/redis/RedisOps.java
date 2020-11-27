@@ -209,6 +209,17 @@ public class RedisOps {
         return opsForHash().keys(toScopeKey(pattern));
     }
 
+    public List<String> hVals(String key) {
+        return opsForHash().values(toScopeKey(key));
+    }
+
+    public <T> List<T> hVals(String key, Class<T> type) {
+        return opsForHash().values(toScopeKey(key))
+                           .stream()
+                           .map(castType(type))
+                           .collect(toList());
+    }
+
     //~ Sets
 
     @SafeVarargs

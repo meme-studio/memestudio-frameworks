@@ -5,6 +5,7 @@ import io.vavr.control.Option;
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -323,6 +324,10 @@ public class RedisOps {
 
     public Boolean expire(String key, long timeout) {
         return template.expire(toScopeKey(key), timeout, TimeUnit.SECONDS);
+    }
+
+    public Boolean expireAt(String key, long timestamp) {
+        return template.expireAt(toScopeKey(key), Instant.ofEpochMilli(timestamp));
     }
 
     public long expire(long timeout, String... keys) {

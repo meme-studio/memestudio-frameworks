@@ -2,6 +2,7 @@ package dev.memestudio.framework.mvc;
 
 import brave.Tracer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.memestudio.framework.common.support.CommonRequestHeaderHolder;
 import dev.memestudio.framework.mvc.doc.FrameworkSwaggerProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
@@ -17,6 +18,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -26,6 +30,11 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -81,12 +90,39 @@ public class FrameworkMvcAutoConfiguration {
                     .build();
         }
 
-        private ApiInfo apiInfo(FrameworkSwaggerProperties properties){
+        private ApiInfo apiInfo(FrameworkSwaggerProperties properties) {
             return new ApiInfoBuilder()
                     .title(properties.getTitle())
                     .description(properties.getDescription())
                     .version(properties.getVersion())
                     .build();
+        }
+
+    }
+
+
+    @RequiredArgsConstructor
+    @Configuration
+    static class CommonWebMvcConfigurer implements WebMvcConfigurer {
+
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            registry.addInterceptor(new AsyncHandlerInterceptor() {
+                @Override
+                public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+                    Map<String, String> headers = Collections.list(request.getHeaderNames())
+                                                             .stream()
+                                                             .map(name -> new AbstractMap.SimpleEntry<>(name, request.getHeader(name)))
+                                                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                    CommonRequestHeaderHolder.set(headers);
+                    return true;
+                }
+
+                @Override
+                public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+                    CommonRequestHeaderHolder.clear();
+                }
+            }).addPathPatterns("/**");
         }
 
     }

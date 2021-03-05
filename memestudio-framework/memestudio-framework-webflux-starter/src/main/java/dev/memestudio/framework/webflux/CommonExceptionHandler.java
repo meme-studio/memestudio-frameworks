@@ -77,6 +77,16 @@ public class CommonExceptionHandler {
     }
 
     /**
+     * 需要版本升级异常
+     */
+    @ExceptionHandler(NeedUpgradeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ErrorMessage handleNeedUpgradeException(NeedUpgradeException ex, ServerHttpRequest request) {
+        log.warn(ex.getMessage(), ex);
+        return buildErrorMessage(request, ex, ex, appName);
+    }
+
+    /**
      * 参数异常
      */
     @ExceptionHandler({

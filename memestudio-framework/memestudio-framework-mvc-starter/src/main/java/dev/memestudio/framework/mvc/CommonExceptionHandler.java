@@ -134,6 +134,16 @@ public class CommonExceptionHandler {
     }
 
     /**
+     * 需要版本升级异常
+     */
+    @ExceptionHandler(NeedUpgradeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ErrorMessage handleNeedUpgradeException(NeedUpgradeException ex, HttpServletRequest request) {
+        log.warn(ex.getMessage(), ex);
+        return buildErrorMessage(request, ex, ex, appName);
+    }
+
+    /**
      * 远程调用异常
      */
     @ExceptionHandler(HystrixRuntimeException.class)

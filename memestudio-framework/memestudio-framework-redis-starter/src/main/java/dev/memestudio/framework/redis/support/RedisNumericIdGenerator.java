@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.function.Predicate;
 
 /**
  * RedisIdGenerator
@@ -28,7 +27,7 @@ public class RedisNumericIdGenerator implements NumericIdGenerator {
     public String generateId() {
         return Option.of(redisOps.incr(key))
                      .peek(id -> Option.of(id)
-                                       .filter(Predicate.isEqual(9900L))
+                                       .filter(thisId -> thisId > 9900L)
                                        .peek(__ -> redisOps.del(key)))
                      .map(id -> String.format("%s%04d", LocalDateTime.now().format(ID_PREFIX_FORMAT), id))
                      .getOrElseThrow(() -> new IllegalStateException("Generate id error!"));

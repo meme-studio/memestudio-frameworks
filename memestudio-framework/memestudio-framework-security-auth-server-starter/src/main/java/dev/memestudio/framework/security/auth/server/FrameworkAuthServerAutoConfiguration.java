@@ -25,8 +25,9 @@ import static java.util.stream.Collectors.toMap;
 public class FrameworkAuthServerAutoConfiguration implements WebFluxConfigurer {
 
     @Bean
-    public TokenToUserIdFilter tokenToUserIdFilter(AuthTokenStore authTokenStore) {
-        return new TokenToUserIdFilter(authTokenStore);
+    public TokenToUserIdFilter tokenToUserIdFilter(AuthTokenStore authTokenStore, List<TokenScope> tokenScopes) {
+        return new TokenToUserIdFilter(authTokenStore, tokenScopes.stream()
+                                                                  .collect(toMap(TokenScope::getName, identity())));
     }
 
     @Bean

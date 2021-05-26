@@ -10,6 +10,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -17,13 +18,15 @@ public class TokenToUserIdFilter implements GlobalFilter, Ordered {
 
     private final AuthTokenStore authTokenStore;
 
+    private final Map<String, TokenScope> tokenScopes;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         HttpHeaders headers = exchange.getRequest().getHeaders();
         String token = headers.getFirst(AuthTokenConstants.TOKEN_HEADER);
         String scope = headers.getFirst(AuthTokenConstants.SCOPE_HEADER);
         ServerHttpRequest request = Optional.ofNullable(token)
-                                            .map(__ -> authTokenStore.getUserId(token, scope))
+                                            .map(__ -> getUserIdAndExtendTokenTimeout(token, scope))
                                             .map(userId -> exchange.getRequest()
                                                                    .mutate()
                                                                    .header(AuthConstants.AUTH_USER_HEADER, userId)
@@ -36,6 +39,13 @@ public class TokenToUserIdFilter implements GlobalFilter, Ordered {
         return chain.filter(exchange.mutate()
                                     .request(request)
                                     .build());
+    }
+
+    private String getUserIdAndExtendTokenTimeout(String token, String scope) {
+        String userId = authTokenStore.getUserId(token, scope);
+        Optional.ofNullable(userId)
+                .ifPresent(__ -> authTokenStore.extendTokenTimeout(token, scope, tokenScopes.get(scope).getTokenTimeout(), userId));
+        return userId;
     }
 
     private ServerHttpRequest getNoAuthHeaderRequest(ServerWebExchange exchange) {

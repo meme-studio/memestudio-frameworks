@@ -72,4 +72,7 @@ public class AuthTokenStore {
         return redisOps.get(String.join(":", AuthTokenConstants.AUTH_TOKEN_STORE_TOKEN_KEY, scope, token));
     }
 
+    public void extendTokenTimeout(String token, String scope, long tokenTimeout, String userId) {
+        redisOps.setEx(String.join(":", AuthTokenConstants.AUTH_TOKEN_STORE_TOKEN_KEY, scope, token), userId, tokenTimeout);
+    }
 }

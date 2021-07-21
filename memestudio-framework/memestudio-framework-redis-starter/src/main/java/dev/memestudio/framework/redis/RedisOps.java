@@ -221,6 +221,14 @@ public class RedisOps {
                            .collect(toList());
     }
 
+    public Double hIncrByFloat(String key, String field, double value) {
+        return opsForHash().increment(key, field, value);
+    }
+
+    public Long hIncrBy(String key, String field, long value) {
+        return opsForHash().increment(key, field, value);
+    }
+
     //~ Sets
 
     @SafeVarargs

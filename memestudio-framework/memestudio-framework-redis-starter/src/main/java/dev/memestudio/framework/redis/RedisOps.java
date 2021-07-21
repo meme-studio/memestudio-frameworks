@@ -229,6 +229,10 @@ public class RedisOps {
         return opsForHash().increment(toScopeKey(key), field, value);
     }
 
+    public <T> Boolean hSetNx(String key, String field, T value) {
+        return opsForHash().putIfAbsent(toScopeKey(key), field, valueToString(value));
+    }
+
     //~ Sets
 
     @SafeVarargs

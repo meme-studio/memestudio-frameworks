@@ -222,11 +222,11 @@ public class RedisOps {
     }
 
     public Double hIncrByFloat(String key, String field, double value) {
-        return opsForHash().increment(key, field, value);
+        return opsForHash().increment(toScopeKey(key), field, value);
     }
 
     public Long hIncrBy(String key, String field, long value) {
-        return opsForHash().increment(key, field, value);
+        return opsForHash().increment(toScopeKey(key), field, value);
     }
 
     //~ Sets
